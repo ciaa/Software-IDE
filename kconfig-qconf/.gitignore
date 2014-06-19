@@ -26,3 +26,9 @@ Makefile*
 # QtCreator
 
 *.autosave
+
+# Kconfig
+.config*
+*.tmp
+kconfig-qconf
+include/
