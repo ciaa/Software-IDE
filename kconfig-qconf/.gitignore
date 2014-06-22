@@ -30,5 +30,5 @@ Makefile*
 # Kconfig
 .config*
 *.tmp
-kconfig-qconf
+kconfig-qtconf
 include/
