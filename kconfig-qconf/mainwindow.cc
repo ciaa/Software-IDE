@@ -240,27 +240,26 @@ void qconf_MainWindow::on_actionCollapse_triggered()
 
 void qconf_MainWindow::on_actionAbout_triggered()
 {
-    const QString str = tr("qconf is Copyright (C) 2002 Roman Zippel <zippel@linux-m68k.org>, 2013 David Gräff <david.graeff@web.de>.\n\n"
-        "Bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n");
+    const QString str = tr(
+          "qconf is Copyright (C) 2002 Roman Zippel <zippel@linux-m68k.org>, 2013 David Gräff <david.graeff@web.de>.\n\n"
+          "qconf bug reports and feature request can also be entered at http://bugzilla.kernel.org/\n\n"
+          "CIAA Firmware bug reports and feature request can also be entered at http://github.com/ciaa/IDE/issues\n\n"
+          "CIAA Project Page: http://www.proyecto-ciaa.com.ar\n");
 
-    QMessageBox::information(this, "qconf", str);
+    QMessageBox::information(this, "CIAA Firmware Configuration", str);
 }
 
 void qconf_MainWindow::on_actionIntroduction_triggered()
 {
-    const QString str = tr("Welcome to the qconf graphical configuration tool.\n\n"
-        "For each option, a blank box indicates the feature is disabled, a check\n"
-        "indicates it is enabled, and a dot indicates that it is to be compiled\n"
-        "as a module.  Clicking on the box will cycle through the three states.\n\n"
-        "If you do not see an option (e.g., a device driver) that you believe\n"
-        "should be present, try turning on Show All Options under the Options menu.\n"
-        "Although there is no cross reference yet to help you figure out what other\n"
-        "options must be enabled to support the option you are interested in, you can\n"
-        "still view the help of a grayed-out option.\n\n"
-        "Toggling Show Debug Info under the Options menu will show the dependencies,\n"
-        "which you can then match by examining other options.\n\n");
+    const QString str = tr(
+         "This is the CIAA Firmware configuration tool.\n\n"
+         "This tool will allow you to configure the CIAA Firmware in an easy way.\n"
+         "Please check the help of each parameter and use defaults values if you are not sure.\n\n"
+         "Official WebPage: http://www.proyecto-ciaa.com.ar\n\n"
+         "Issues shall be reported to : https://github.com/ciaa/IDE/issues\n\n"
+         "This configuration tool is based on the Linux Kernel Configuration\n");
 
-    QMessageBox::information(this, "qconf", str);
+    QMessageBox::information(this, "CIAA Firmware Configuration", str);
 }
 
 void qconf_MainWindow::on_actionQuit_triggered()
