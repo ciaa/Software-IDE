@@ -8,6 +8,7 @@
 #include "mainwindow.h"
 #include <qglobal.h>
 #include <QApplication>
+#include <QFileInfo>
 #include <QDebug>
 #include "./expr.h"
 #include "./lkc.h"
@@ -38,19 +39,38 @@ static void usage(void)
 	exit(0);
 }
 
+static int do_conf(const char *cmd, const char *filename) {
+    const char *v[] = { "conf", cmd, filename };
+    return conf_main(sizeof(v)/sizeof(*v), (char**)v);
+}
+
+static void parse_args(int argc, char **argv) {
+    const char *name = 0l;
+    const char *cmd = 0l;
+    for(int i=1; i<argc; i++) {
+        if (QString(argv[i]).startsWith("--"))
+            cmd = argv[i];
+        else if (QFileInfo(argv[i]).exists())
+            name = argv[i];
+    }
+    if (cmd && name)
+        exit(do_conf(cmd, name));
+}
+
 int main(int ac, char** av)
 {
 	const char *name;
 
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+    parse_args(ac, av);
 
 	progname = av[0];
     QApplication configApp(ac, av);
 	// Important for QSetting to store settings in .config/kernel.org/qconf
 	configApp.setApplicationName("qconf");
 	configApp.setOrganizationDomain("kernel.org");
-	
+
 	if (ac > 1 && av[1][0] == '-') {
 		switch (av[1][1]) {
 		case 'h':
@@ -58,7 +78,7 @@ int main(int ac, char** av)
 			usage();
 		}
 	}
-	
+
 	if (ac > 2 && av[1][0] == '-') {
 		name = av[2];
     } else if(ac>1) {
@@ -68,7 +88,7 @@ int main(int ac, char** av)
         name = "Kconfig";
 	}
 
-	conf_parse(name);
+    conf_parse(name);
 	fixup_rootmenu(&rootmenu);
 	conf_read(NULL);
 	//zconfdump(stdout);
@@ -77,11 +97,5 @@ int main(int ac, char** av)
     configApp.setQuitOnLastWindowClosed(true);
     v.show();
     configApp.exec();
-    do {
-        char *v[] = {
-            "conf", "--silentoldconfig", (char*) name
-        };
-        conf_main(3, v);
-    } while(0);
-	return 0;
+    return do_conf("--olddefconfig", name);
 }
