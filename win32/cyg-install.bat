@@ -43,7 +43,7 @@ REM -g --upgrade-also                 also upgrade installed packages
 REM -o --delete-orphans               remove orphaned packages
 REM -A --disable-buggy-antivirus      Disable known or suspected buggy anti virus
 REM                                   software packages during execution.
-SET INSTALLOPTS=-q -d -L -X -N -A -r
+SET INSTALLOPTS=-q -d -L -B -X -N -A -r
 
 REM -- These are the packages we will install (in addition to the default packages)
 SET PACKAGES=mintty,wget,ctags,diffutils,git,git-completion,gcc-g++,make,ruby,perl
