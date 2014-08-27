@@ -1,10 +1,9 @@
 @ECHO OFF
 CD %~dp0
 set SETUPURL=http://cygwin.com/setup-x86.exe
-
+call get-tools.bat
 if not exist setup-x86.exe (
-	powershell -command "& { (New-Object Net.WebClient).DownloadFile('%SETUPURL%', 'setup-x86.exe') }"
-	pause
+	wget %SETUPURL% -O setup-x86.exe
 )
 
 REM -- Configure our paths

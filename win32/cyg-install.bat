@@ -51,5 +51,3 @@ SET PACKAGES=mintty,wget,ctags,diffutils,git,git-completion,gcc-g++,make,ruby,pe
 REM -- Do it!
 ECHO *** INSTALLING Cygwin
 start /wait setup-x86 %INSTALLOPTS% -l "%LOCALREPO%" -R "%ROOTDIR%" -P %PACKAGES%
-
-PAUSE
