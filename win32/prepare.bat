@@ -1,16 +1,16 @@
 @echo off
 CD %~dp0
 echo Download prerequisites to create installer
-call get-tools.bat
+call get-tools.bat > get-tools.log
 echo Download cygwin...
-call cyg-download.bat
+call cyg-download.bat > cyg-download.log
 echo Install cygwin in temporal directory...
-call cyg-install.bat
+call cyg-install.bat > cyg-install.log
 echo Download eclipse/JRE/plugins...
-call eclipse-dl.bat
+call eclipse-dl.bat > eclipse-dl.log
 echo Download arm gcc embedded...
-call arm-embedded-dl.bat
+call arm-embedded-dl.bat > arm-embedded-dl.log
 echo Download NSIS...
-call nsis-dl.bat
+call nsis-dl.bat > nsis-dl.log
 echo Done.
 pause
