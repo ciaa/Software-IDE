@@ -29,7 +29,7 @@ if  not exist eclipse\jre (
 	move jre1.8.0_20 eclipse\jre
 	del/Q tmp.tar
 )
-if not exist eclipse\plugins\org.eclipse.cdt.build.crossgcc_*.jar (
+if not exist eclipse\plugins\ilg.gnuarmeclipse.managedbuild.cross* (
 	echo Install eclipse plugins
 	cd eclipse
 	$dp0\eclipse -clean -purgeHistory -nosplash -consolelog -application org.eclipse.equinox.p2.director -repository %ECLIPSEREPOS% -installIU %ECLIPSEPKGS%
