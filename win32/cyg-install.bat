@@ -3,6 +3,8 @@ REM -- Automates cygwin installation
 REM -- Change to the directory of the executing batch file
 CD %~dp0
 
+if exist cygwin\bin\cygwin1.dll goto out
+
 REM -- Configure our paths
 SET LOCALDIR=%CD%
 SET ROOTDIR=%LOCALDIR%\cygwin
@@ -51,3 +53,7 @@ SET PACKAGES=mintty,wget,ctags,diffutils,git,git-completion,gcc-g++,make,ruby,pe
 REM -- Do it!
 ECHO *** INSTALLING Cygwin
 start /wait setup-x86 %INSTALLOPTS% -l "%LOCALREPO%" -R "%ROOTDIR%" -P %PACKAGES%
+copy %LOCALDIR%\Cygwin.bat.in %ROOTDIR%
+copy %LOCALDIR%\arm-none-eabi.sh %ROOTDIR%\etc\profile.d
+copy %LOCALDIR%\eclipse.sh %ROOTDIR%\etc\profile.d
+:out

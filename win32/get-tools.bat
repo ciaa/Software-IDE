@@ -1,3 +1,5 @@
+@echo off
+CD %~dp0
 set WGETURL=http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe
 if not exist wget.exe (
 	echo "Obtaning wget"

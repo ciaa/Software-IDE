@@ -6,6 +6,8 @@ if not exist setup-x86.exe (
 	wget %SETUPURL% -O setup-x86.exe
 )
 
+if exist local-repo\x86\setup.ini goto out
+
 REM -- Configure our paths
 SET SITE=http://cygwin.mirrors.pair.com/
 SET SITE_LOCALDIR=http%%3a%%2f%%2fcygwin.mirrors.pair.com%%2f
@@ -59,3 +61,4 @@ start /WAIT setup-x86 %INSTALLOPTS% -s %SITE% -l "%LOCALDIR%" -P %PACKAGES% -R "
 
 move/Y %LOCALDIR%\%SITE_LOCALDIR% %REPODIR%
 rmdir/S/Q %LOCALDIR%
+:out
