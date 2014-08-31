@@ -53,7 +53,8 @@ SET PACKAGES=mintty,wget,ctags,diffutils,git,git-completion,gcc-g++,make,ruby,pe
 REM -- Do it!
 ECHO *** INSTALLING Cygwin
 start /wait setup-x86 %INSTALLOPTS% -l "%LOCALREPO%" -R "%ROOTDIR%" -P %PACKAGES%
-copy/Y %LOCALDIR%\Cygwin.bat.in %ROOTDIR%\Cygwin.bat
-copy/Y %LOCALDIR%\arm-none-eabi.sh %ROOTDIR%\etc\profile.d
-copy/Y %LOCALDIR%\eclipse.sh %ROOTDIR%\etc\profile.d
 :out
+if not exist %ROOTDIR%\Cygwin.bat copy/Y %LOCALDIR%\Cygwin.bat.in %ROOTDIR%\Cygwin.bat
+if not exist %ROOTDIR%\StartEclipseIDE.bat copy/Y %LOCALDIR%\StartEclipseIDE.bat.in %ROOTDIR%\StartEclipseIDE.bat
+if not exist %ROOTDIR%\etc\profile.d copy/Y %LOCALDIR%\arm-none-eabi.sh %ROOTDIR%\etc\profile.d
+if not exist %ROOTDIR%\etc\profile.d copy/Y %LOCALDIR%\eclipse.sh %ROOTDIR%\etc\profile.d

@@ -7,6 +7,8 @@ if not exist nsis-2.46.zip (
 	echo Downloading Nullsoft Scriptable Install System...
 	wget "%NSISURL%"
 )
-echo Uncompress...
-unzip nsis-2.46.zip
-move/Y .\nsis-2.46 nsis
+if not exist nsis-2.46 (
+	echo Uncompress...
+	unzip nsis-2.46.zip
+	move/Y .\nsis-2.46 nsis
+)

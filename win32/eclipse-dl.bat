@@ -14,7 +14,7 @@ if not exist %LOCALFILE% (
 	echo Download eclipse
 	wget %ECLPISEURL% -O %LOCALFILE%
 )
-if not exist eclipse (
+if not exist %ECLIPSE_INSTDIR%\eclipse (
 	echo Uncompress eclipse
 	unzip %LOCALFILE% -d %ECLIPSE_INSTDIR%
 )
@@ -33,4 +33,3 @@ if not exist %ECLIPSE_INSTDIR%\eclipse\plugins\ilg.gnuarmeclipse.managedbuild.cr
 	echo Install eclipse plugins
 	%ECLIPSE_INSTDIR%\eclipse\eclipse -clean -purgeHistory -nosplash -consolelog -application org.eclipse.equinox.p2.director -repository %ECLIPSEREPOS% -installIU %ECLIPSEPKGS%
 )
-rem if not exist %FINALECLIPSE_DST% move eclipse %FINALECLIPSE_DST%
