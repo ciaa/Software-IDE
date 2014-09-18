@@ -43,8 +43,8 @@ if not exist %LOCALFILE% (
 	echo Downloading OpenOCD 'On Chip Debugger'...
 	wget "%OPENOCD_URL%" -O %LOCALFILE%
 )
-if not exist cygwin\usr\local\openocd (
+if not exist cygwin\usr\local\bin\openocd-0.8.0.exe (
 	echo Uncompress...
 	7za x %LOCALFILE%
-	move/Y openocd-0.8.0 cygwin\usr\local\openocd
+	move/Y openocd-0.8.0\bin\* cygwin\usr\local\bin
 )
