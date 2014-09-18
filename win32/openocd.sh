@@ -33,4 +33,4 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ###############################################################################
-export PATH=/usr/arm-none-eabi/bin:$PATH
+export PATH=/usr/local/openocd/bin:$PATH

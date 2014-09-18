@@ -1,4 +1,3 @@
 @echo off
 cd %~dp0
-chdir bin
-bash --login -i
+bin\mintty bin/bash --login -i

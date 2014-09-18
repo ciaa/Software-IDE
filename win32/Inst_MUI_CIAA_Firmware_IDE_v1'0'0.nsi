@@ -1,3 +1,39 @@
+;##############################################################################
+;
+; Copyright 2014, ACSE & CADIEEL
+;    ACSE   : http://www.sase.com.ar/asociacion-civil-sistemas-embebidos/ciaa/
+;    CADIEEL: http://www.cadieel.org.ar
+;
+; This file is part of CIAA Firmware.
+;
+; Redistribution and use in source and binary forms, with or without
+; modification, are permitted provided that the following conditions are met:
+;
+; 1. Redistributions of source code must retain the above copyright notice,
+;    this list of conditions and the following disclaimer.
+;
+; 2. Redistributions in binary form must reproduce the above copyright notice,
+;    this list of conditions and the following disclaimer in the documentation
+;    and/or other materials provided with the distribution.
+;
+; 3. Neither the name of the copyright holder nor the names of its
+;    contributors may be used to endorse or promote products derived from this
+;    software without specific prior written permission.
+;
+; THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+; IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+; ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+; LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+; CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+; SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+; INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+; CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+; ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+; POSSIBILITY OF SUCH DAMAGE.
+;
+;##############################################################################
+
 ; Instalador de las aplicacines que se indiquen con el "define", y busca la
 ; aplicacion correspondiente en el directorio root de esta carpeta
 ; para luego copiarla en el directorio destino
@@ -7,6 +43,10 @@
 ;
 ;--------------------------------
 ;
+
+SetCompressor /SOLID lzma
+
+!include "x64.nsh"
 
 ;Include Modern UI
   !include "MUI.nsh"
@@ -33,7 +73,7 @@ Name "CIAA-Firmware-IDE"
 OutFile "Setup_CIAA_Firmware_IDE.exe"
 
 ; The default installation directory
-InstallDir $PROGRAMFILES\CIAA
+InstallDir C:\CIAA
 
 ; Registry key to check for directory (so if you install again, it will 
 ; overwrite the old one automatically)
@@ -43,6 +83,7 @@ InstallDir $PROGRAMFILES\CIAA
 ;Interface Settings
 
   !define MUI_ABORTWARNING
+  !define MUI_FINISHPAGE_NOAUTOCLOSE
 
 ;--------------------------------
 ;Pages
@@ -85,6 +126,7 @@ Function .onInstSuccess
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoModify" 1
   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoRepair" 1
   WriteUninstaller "uninstall.exe"
+  ; TODO Add driver code here
 FunctionEnd
 
 ;--------------------------------
@@ -100,7 +142,10 @@ Section "Cygwin" Sec_Cygwin
   SetOutPath $INSTDIR
   ;
   ; Put file there
-  File /r "Cygwin"
+  File /r usbdriver
+  File /oname=SetUsers.bat SetUsers.bat.in
+  File /r cygwin
+  nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
 SectionEnd
 !endif
 ;
@@ -116,7 +161,8 @@ Section "Acceso directo en Menu Inicio" SecMenuInicio
 ;
   !ifdef INSTALL_CYGWIN
   SetOutPath "$INSTDIR\cygwin\"
-  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "" "$INSTDIR\cygwin\bin\mintty.exe" 0
+  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
+  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
   !endif
 ;
 SectionEnd
@@ -129,7 +175,8 @@ Section "Acceso directo en Escritorio" SecEscritorio
   ;
   !ifdef INSTALL_CYGWIN
   SetOutPath "$INSTDIR\cygwin\"
-  CreateShortCut "$DESKTOP\cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "" "$INSTDIR\cygwin\bin\mintty.exe" 0
+  CreateShortCut "$DESKTOP\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
+  CreateShortCut "$DESKTOP\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
   !endif
 ;
 SectionEnd
@@ -150,7 +197,8 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
 ;
   !ifdef INSTALL_CYGWIN
-  Delete "$DESKTOP\cygwin.lnk"
+  Delete "$DESKTOP\CIAA cygwin.lnk"
+  Delete "$DESKTOP\CIAA IDE.lnk"
   !endif
 ;
   ; Remove directories used
