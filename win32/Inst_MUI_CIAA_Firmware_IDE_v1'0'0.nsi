@@ -145,7 +145,16 @@ Section "Cygwin" Sec_Cygwin
   File /r usbdriver
   File /oname=SetUsers.bat SetUsers.bat.in
   File /r cygwin
+
+  ; Redirect $HOME to X:/Users/
   nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
+
+  ; Install WinUSB driver for FTDI 2232H
+${If} ${RunningX64}
+  nsExec::ExecToLog "$INSTDIR\usbdriver\amd64\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
+${Else}
+  nsExec::ExecToLog "$INSTDIR\usbdriver\x86\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
+${EndIf}
 SectionEnd
 !endif
 ;

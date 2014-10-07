@@ -33,4 +33,10 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 ###############################################################################
-export PATH=/usr/local/openocd/bin:$PATH
+if [ $(arch) != i686 ]; then
+	export PATH=/usr/local/openocd/bin:$PATH
+	alias openocd.exe=openocd-0.8.0.exe
+else
+	export PATH=/usr/local/openocd/bin-x64:$PATH
+	alias openocd.exe=openocd-x64-0.8.0.exe
+fi
