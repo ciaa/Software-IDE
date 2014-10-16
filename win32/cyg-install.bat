@@ -38,12 +38,12 @@
 :: -- Change to the directory of the executing batch file
 CD %~dp0
 
-if exist cygwin\bin\cygwin1.dll goto out
-
 :: -- Configure our paths
 SET LOCALDIR=%CD%
 SET ROOTDIR=%LOCALDIR%\cygwin
 SET LOCALREPO=%CD%\local-repo
+
+if exist cygwin\bin\cygwin1.dll goto out
 
 :: Command Line Options:
 :: -D --download                     Download from internet
@@ -93,5 +93,5 @@ copy/Y %LOCALDIR%\Cygwin.bat.in %ROOTDIR%\Cygwin.bat
 copy/Y %LOCALDIR%\StartEclipseIDE.bat.in %ROOTDIR%\StartEclipseIDE.bat
 copy/Y %LOCALDIR%\arm-none-eabi.sh %ROOTDIR%\etc\profile.d\arm-none-eabi.sh
 copy/Y %LOCALDIR%\eclipse.sh %ROOTDIR%\etc\profile.d\eclipse.sh
-copy/Y %LOCALDIR%\openocd.sh %ROOTDIR%\etc\profile.d\openocd.sh
 copy/Y %LOCALDIR%\testbench.sh %ROOTDIR%\usr\local\bin\testbench.sh
+pause

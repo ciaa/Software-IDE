@@ -149,10 +149,14 @@ Section "Cygwin" Sec_Cygwin
   ; Redirect $HOME to X:/Users/
   nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
 
-  ; Install WinUSB driver for FTDI 2232H
+  ; Install WinUSB driver for FTDI 2232H & correct oocd version name
 ${If} ${RunningX64}
+  File /oname=cygwin\etc\profile.d\openocd.sh openocd-x64.sh
+  CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd-x64-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd.exe"
   nsExec::ExecToLog "$INSTDIR\usbdriver\amd64\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
 ${Else}
+  File /oname=cygwin\etc\profile.d\openocd.sh openocd-x86.sh
+  CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin\openocd-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin\openocd.exe"
   nsExec::ExecToLog "$INSTDIR\usbdriver\x86\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
 ${EndIf}
 SectionEnd
@@ -209,7 +213,7 @@ Section "Uninstall"
   Delete "$DESKTOP\CIAA cygwin.lnk"
   Delete "$DESKTOP\CIAA IDE.lnk"
   !endif
-;
+
   ; Remove directories used
   RMDir /r "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
   RMDir "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"

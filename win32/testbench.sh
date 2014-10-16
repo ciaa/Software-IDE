@@ -42,6 +42,7 @@ GIT_VERSION=2.1.1
 PHP_VERSION=5.5.16
 RUBY_VERSION=2.0.0
 MAKE_VERSION=4.0
+OOCD_VERSION=0.8.0
 
 FIRMWARE_REPO="git://github.com/ciaa/Firmware.git"
 FIRMWARE_VERSION="0.2.0"
@@ -62,7 +63,7 @@ fi
 
 function check_ver {
 echo -n "Checking $1 version... "
-if [ $( $2 | grep -F -c -e "$3" ) -eq 1 ]; then
+if [ $( $2 2>&1 | grep -F -c -e "$3" ) -eq 1 ]; then
 	echo "PASS"
 	return 0
 else
@@ -111,7 +112,7 @@ else
 	cleanup
 	return 1
 fi
-}
+} 	
 
 check_home
 check_ver "gcc" "gcc --version" "$GCC_VERSION" &&
@@ -121,6 +122,7 @@ check_ver "Git" "git --version" "git version $GIT_VERSION" &&
 check_ver "PHP" "php --version" "PHP $PHP_VERSION" &&
 check_ver "Ruby" "ruby --version" "ruby $RUBY_VERSION" &&
 check_ver "Make" "make --version" "GNU Make $MAKE_VERSION" &&
+check_ver "openocd" "openocd --version" "Open On-Chip Debugger $OOCD_VERSION" &&
 check_clone $FIRMWARE_REPO $FIRMWARE_VERSION &&
 check_make generate Firmware &&
 check_make "" Firmware &&
