@@ -51,5 +51,5 @@ echo Download OpenOCD...
 call openocd-dl.bat > openocd-dl.log
 echo Download NSIS...
 call nsis-dl.bat > nsis-dl.log
-echo Done.
+echo Done. Press any key to end
 pause

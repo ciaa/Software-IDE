@@ -40,4 +40,3 @@ cd %~dp0
 set BASE=%CD%
 echo Executing NSIS...
 %BASE%\nsis\makensis.exe /V4 /Onsis-build-process.log %SCRIPT%
-pause

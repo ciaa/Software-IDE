@@ -40,7 +40,7 @@ call get-tools.bat
 if not exist setup-x86.exe (
 	wget %SETUPURL% -O setup-x86.exe
 )
-pause
+
 if exist local-repo\x86\setup.ini goto out
 
 :: -- Configure our paths
