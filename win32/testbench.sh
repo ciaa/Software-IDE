@@ -79,11 +79,12 @@ function cleanup {
 
 function do_configure {
 	/bin/cat <<EOM > Firmware/Makefile.mine
-ARCH           = cortexM4
-CPUTYPE        = lpc43xx
-CPU            = lpc4337
-COMPILER       = gcc
-PROJECT ?= examples/blinking
+#ARCH           = cortexM4
+#CPUTYPE        = lpc43xx
+#CPU            = lpc4337
+#COMPILER       = gcc
+BOARD          ?= ciaa_sim_ia32
+PROJECT_PATH ?= examples/blinking
 EOM
 }
 
