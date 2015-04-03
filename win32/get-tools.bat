@@ -40,7 +40,7 @@ if not exist wget.exe (
 	echo "Obtaning wget"
 	powershell -command "& { (New-Object Net.WebClient).DownloadFile('%WGETURL%', 'wget.exe') }"
 )
-set PATH=.;%PATH%
+set PATH=.;.\bin\;%PATH%
 if not exist tar.exe (
 	echo "Obtaning tar.exe ..."
 	wget http://www2.cs.uidaho.edu/~jeffery/win32/tar.exe
