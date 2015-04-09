@@ -54,7 +54,7 @@ SetCompressor /SOLID lzma
 Function .onInit
 	# the plugins dir is automatically deleted when the installer exits
 	InitPluginsDir
-	File /oname=$PLUGINSDIR\splash.bmp "Logo.bmp"
+	File /oname=$PLUGINSDIR\splash.bmp "Images\Logo.bmp"
 	splash::show 3000 $PLUGINSDIR\splash
 
 	Pop $0 ; $0 has '1' if the user closed the splash screen early,

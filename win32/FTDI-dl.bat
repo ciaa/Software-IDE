@@ -34,22 +34,14 @@
 ::
 ::##############################################################################
 @echo off
-CD %~dp0
-echo Download prerequisites to create installer
-call get-tools.bat > get-tools.log
-echo Download cygwin...
-call cyg-download.bat >  cyg-download.log
-echo Install cygwin in temporal directory...
-call cyg-install.bat > cyg-install.log
-echo Download eclipse/JRE/plugins...
-call eclipse-dl.bat > eclipse-dl.log
-echo Download arm gcc embedded...
-call arm-embedded-dl.bat > arm-embedded-dl.log
-echo Download OpenOCD...
-call openocd-dl.bat > openocd-dl.log
-echo Download NSIS...
-call nsis-dl.bat > nsis-dl.log
-echo Download FTDI Drivers...
-call FTDI-dl.bat > FTDI-dl.log
-echo Done. Press any key to end
-pause
+call get-tools.bat
+
+set FTDI_INSTDIR=FTDI_Driver
+set FTDI_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.12.00%%20WHQL%%20Certified.exe
+
+if not exist %FTDI_INSTDIR%\CDM_v2_12_00_WHQL_Certified.exe (
+	echo Downloading Certified FTDI VCP Drivers...
+	wget "%FTDI_URL%" -O CDM_v2_12_00_WHQL_Certified.exe
+	mkdir %FTDI_INSTDIR%
+	move/Y CDM_v2_12_00_WHQL_Certified.exe %FTDI_INSTDIR%\CDM_v2_12_00_WHQL_Certified.exe
+)
