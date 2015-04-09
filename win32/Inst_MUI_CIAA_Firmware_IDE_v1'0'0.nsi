@@ -149,6 +149,15 @@ Section "Cygwin" Sec_Cygwin
   ; Redirect $HOME to X:/Users/
   nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
 
+  ; Install FTDI Drivers first
+  File /oname=Setup_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
+  ClearErrors
+  ExecWait "$INSTDIR\Setup_FTDI.exe"
+  IfErrors 0 FTDI_Installed_ok
+  MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta"
+  FTDI_Installed_ok:
+  Delete "$INSTDIR\Setup_FTDI.exe"
+  
   ; Install WinUSB driver for FTDI 2232H & correct oocd version name
 ${If} ${RunningX64}
   File /oname=cygwin\etc\profile.d\openocd.sh openocd-x64.sh
