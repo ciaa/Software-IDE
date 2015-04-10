@@ -40,6 +40,8 @@
 ; Las aplicaciones son obligatorias y es opcional los accesos directos
 ;
 !define INSTALL_CYGWIN
+!define INSTALL_DRIVERS
+;!define SKIP_INSTALL_CYGWIN_FILES ; Permite hacer un instalador pequeño sin perder la sección cygwin, pero sin incluir sus archivos
 ;
 ;--------------------------------
 ;
@@ -47,6 +49,7 @@
 SetCompressor /SOLID lzma
 
 !include "x64.nsh"
+!include "WinVer.nsh"
 
 ;Include Modern UI
   !include "MUI.nsh"
@@ -94,100 +97,124 @@ InstallDir C:\CIAA
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_WELCOME
-  !insertmacro MUI_PAGE_LICENSE "License.txt"
-  !insertmacro MUI_PAGE_COMPONENTS
-  !insertmacro MUI_PAGE_DIRECTORY
-  !insertmacro MUI_PAGE_INSTFILES
-  !insertmacro MUI_PAGE_FINISH
+   !insertmacro MUI_PAGE_WELCOME
+   !insertmacro MUI_PAGE_LICENSE "License.txt"
+   !insertmacro MUI_PAGE_COMPONENTS
+   !insertmacro MUI_PAGE_DIRECTORY
+   !insertmacro MUI_PAGE_INSTFILES
+   !insertmacro MUI_PAGE_FINISH
 
-  !insertmacro MUI_UNPAGE_WELCOME
-  !insertmacro MUI_UNPAGE_CONFIRM
-  !insertmacro MUI_UNPAGE_INSTFILES
-  !insertmacro MUI_UNPAGE_FINISH
+   !insertmacro MUI_UNPAGE_WELCOME
+   !insertmacro MUI_UNPAGE_CONFIRM
+   !insertmacro MUI_UNPAGE_INSTFILES
+   !insertmacro MUI_UNPAGE_FINISH
 ;--------------------------------
 ;Languages
 
-  !insertmacro MUI_LANGUAGE "Spanish"
-  ;
-  VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA Firmware IDE"
-  VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador del IDE para CIAA Firmware"
-  VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
-  VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
-  VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2014"
-  VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE para CIAA Firmware"
-  VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "1.0.0"
-  VIProductVersion "1.0.0.0"
+   !insertmacro MUI_LANGUAGE "Spanish"
+   ;
+   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA Firmware IDE"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador del IDE para CIAA Firmware"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
+   VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE para CIAA Firmware"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "0.3.0"
+   VIProductVersion "0.3.0.0"
 ;--------------------------------
 ; Si termina de instalar Ok,
 ; pongo el desinstalador !!!
 ;--------------------------------
 Function .onInstSuccess
-  ; Write the installation path into the registry
-  ;WriteRegStr HKLM SOFTWARE\CIAA "Install_Dir" "$INSTDIR"
+   ; Write the installation path into the registry
+   ;WriteRegStr HKLM SOFTWARE\CIAA "Install_Dir" "$INSTDIR"
   
-  ; Write the uninstall keys for Windows
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "DisplayName" "CIAA-Firmware-IDE"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "UninstallString" '"$INSTDIR\uninstall.exe"'
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoModify" 1
-  WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoRepair" 1
-  WriteUninstaller "uninstall.exe"
-  ; TODO Add driver code here
+   ; Write the uninstall keys for Windows
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "DisplayName" "CIAA-Firmware-IDE"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "UninstallString" '"$INSTDIR\uninstall.exe"'
+   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoModify" 1
+   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE" "NoRepair" 1
+   WriteUninstaller "uninstall.exe"
+   ; TODO Add driver code here
 FunctionEnd
 
 ;--------------------------------
 ;	   Secciones 
 ;--------------------------------
-SectionGroup "Aplicaciones" Sec_Apps
-;
 !ifdef INSTALL_CYGWIN
-Section "Cygwin" Sec_Cygwin
+Section "Cygwin-Eclipse" Sec_Cygwin
 
-  SectionIn RO ; Este va siempre!!!  
-  ; Set output path to the installation directory.
-  SetOutPath $INSTDIR
-  ;
-  ; Put file there
-  File /r usbdriver
-  File /oname=SetUsers.bat SetUsers.bat.in
-  File /r cygwin
+   ; Set output path to the installation directory.
+   SetOutPath $INSTDIR
+   ;
+!ifndef SKIP_INSTALL_CYGWIN_FILES
+   ; Put file there
+   File /oname=SetUsers.bat SetUsers.bat.in
+   File /r cygwin
 
-  ; Redirect $HOME to X:/Users/
-  nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
+   ; Redirect $HOME to X:/Users/
+   nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
 
-  ; Install FTDI Drivers first
-  File /oname=Setup_Win_XP_FTDI.exe FTDI_Driver\CDM_v2_10_00_WHQL_Certified.exe
-  File /oname=Setup_Win_7_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
-  ; We know that host is at least Win XP
-  ${If} ${IsWinXP}
-      ; Host is Win XP
-      ClearErrors
-      ExecWait "$INSTDIR\Setup_Win_XP_FTDI.exe"
-  ${Else}
-      ; Host is newer than XP
-      ClearErrors
-      ExecWait "$INSTDIR\Setup_Win_7_FTDI.exe"
-  ${EndIf}  
-  IfErrors 0 FTDI_Installed_ok
-  MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta"
-  FTDI_Installed_ok:
-  Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
-  Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
-  
-  ; Install WinUSB driver for FTDI 2232H & correct oocd version name
-${If} ${RunningX64}
-  File /oname=cygwin\etc\profile.d\openocd.sh openocd-x64.sh
-  CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd-x64-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd.exe"
-  nsExec::ExecToLog "$INSTDIR\usbdriver\amd64\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
-${Else}
-  File /oname=cygwin\etc\profile.d\openocd.sh openocd-x86.sh
-  CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin\openocd-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin\openocd.exe"
-  nsExec::ExecToLog "$INSTDIR\usbdriver\x86\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
-${EndIf}
+   ; Correct openocd version name
+   ${If} ${RunningX64}
+      File /oname=cygwin\etc\profile.d\openocd.sh openocd-x64.sh
+      CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd-x64-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd.exe"
+   ${Else}
+      File /oname=cygwin\etc\profile.d\openocd.sh openocd-x86.sh
+      CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin\openocd-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin\openocd.exe"
+   ${EndIf}
+!endif
 SectionEnd
 !endif
 ;
-SectionGroupEnd
+!ifdef INSTALL_DRIVERS
+Section "Drivers" Sec_Drivers
+
+   ; Set output path to the installation directory.
+   SetOutPath $INSTDIR
+  
+   ;  Put file there
+   File /r usbdriver
+   ; Install FTDI Drivers first
+
+   ; We know that host is at least Win XP
+   ${If} ${IsWinXP}
+      ; Host is Win XP
+      File /oname=Setup_Win_XP_FTDI.exe FTDI_Driver\CDM_v2_10_00_WHQL_Certified.exe
+   ${Else}
+      ; Host is newer than XP
+      File /oname=Setup_Win_7_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
+   ${EndIf}      
+   MessageBox MB_ICONQUESTION|MB_YESNO "Dispone del hardware para realizar la instalación" IDNO FTDI_Installed_failed
+   MessageBox MB_ICONINFORMATION "Por favor conecte su Hardware ahora, y luego continue cuando el sistema lo haya detectado"
+   ; We know that host is at least Win XP
+   ${If} ${IsWinXP}
+      ; Host is Win XP
+      ClearErrors
+      ExecWait "$INSTDIR\Setup_Win_XP_FTDI.exe"
+   ${Else}
+      ; Host is newer than XP
+      ClearErrors
+      ExecWait "$INSTDIR\Setup_Win_7_FTDI.exe"
+   ${EndIf}  
+   IfErrors 0 FTDI_Installed_ok
+   FTDI_Installed_failed:
+   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta. Los drivers quedarán disponible en el directorio elegido para su instalación posterior manual"
+   Goto FTDI_done
+   FTDI_Installed_ok:
+   Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
+   Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
+   Delete "$INSTDIR\usbdriver"
+  
+   ; Install WinUSB driver for FTDI 2232H & correct oocd version name
+   ${If} ${RunningX64}
+      nsExec::ExecToLog "$INSTDIR\usbdriver\amd64\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
+   ${Else}
+      nsExec::ExecToLog "$INSTDIR\usbdriver\x86\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
+   ${EndIf}
+   FTDI_done:   
+SectionEnd   
+!endif
 ;
 ;--------------------------------
 ;
@@ -253,9 +280,11 @@ SectionEnd
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Apps} "Aplicaciones fundamentales"
     !ifdef INSTALL_CYGWIN
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Cygwin} "Permite trabajar en un entorno posix like, para usar el toolchain gnu"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Cygwin} "Permite trabajar en un entorno posix like y Eclipse, para usar el toolchain gnu"
+    !endif
+    !ifdef INSTALL_DRIVERS
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Drivers} "Permite instalar los drivers, pero debe contar con el Hardware!!!"
     !endif
     !insertmacro MUI_DESCRIPTION_TEXT ${SecMenuInicio} "Accesos Directos en el Menu Inicio"
     !insertmacro MUI_DESCRIPTION_TEXT ${SecEscritorio} "Accesos Directos en el Escritorio"
