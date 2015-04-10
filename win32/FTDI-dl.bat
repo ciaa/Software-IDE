@@ -37,11 +37,19 @@
 call get-tools.bat
 
 set FTDI_INSTDIR=FTDI_Driver
-set FTDI_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.12.00%%20WHQL%%20Certified.exe
+set FTDI_WIN_XP_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.10.00%%20WHQL%%20Certified.exe
+set FTDI_WIN_7_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.12.00%%20WHQL%%20Certified.exe
 
 if not exist %FTDI_INSTDIR%\CDM_v2_12_00_WHQL_Certified.exe (
-	echo Downloading Certified FTDI VCP Drivers...
-	wget "%FTDI_URL%" -O CDM_v2_12_00_WHQL_Certified.exe
+	echo Downloading Certified Win 7 FTDI VCP Drivers...
+	wget "%FTDI_WIN_7_URL%" -O CDM_v2_12_00_WHQL_Certified.exe
 	mkdir %FTDI_INSTDIR%
 	move/Y CDM_v2_12_00_WHQL_Certified.exe %FTDI_INSTDIR%\CDM_v2_12_00_WHQL_Certified.exe
+)
+
+if not exist %FTDI_INSTDIR%\CDM_v2_10_00_WHQL_Certified.exe (
+	echo Downloading Certified Win XP FTDI VCP Drivers...
+	wget "%FTDI_WIN_XP_URL%" -O CDM_v2_10_00_WHQL_Certified.exe
+	mkdir %FTDI_INSTDIR%
+	move/Y CDM_v2_10_00_WHQL_Certified.exe %FTDI_INSTDIR%\CDM_v2_10_00_WHQL_Certified.exe
 )

@@ -59,6 +59,12 @@ Function .onInit
 
 	Pop $0 ; $0 has '1' if the user closed the splash screen early,
 			; '0' if everything closed normally, and '-1' if some error occurred.
+   ${If} ${AtLeastWinXP}
+      ; Tiene al menos Windows XP para instalar CIAA Firmware IDE!!!
+   ${else}    
+      MessageBox MB_ICONSTOP "Necesita al menos Windows XP para instalar 'CIAA Firmware IDE'"
+      Quit
+   ${EndIf}
 FunctionEnd
 ;
 ;--------------------------------
@@ -150,13 +156,23 @@ Section "Cygwin" Sec_Cygwin
   nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
 
   ; Install FTDI Drivers first
-  File /oname=Setup_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
-  ClearErrors
-  ExecWait "$INSTDIR\Setup_FTDI.exe"
+  File /oname=Setup_Win_XP_FTDI.exe FTDI_Driver\CDM_v2_10_00_WHQL_Certified.exe
+  File /oname=Setup_Win_7_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
+  ; We know that host is at least Win XP
+  ${If} ${IsWinXP}
+      ; Host is Win XP
+      ClearErrors
+      ExecWait "$INSTDIR\Setup_Win_XP_FTDI.exe"
+  ${Else}
+      ; Host is newer than XP
+      ClearErrors
+      ExecWait "$INSTDIR\Setup_Win_7_FTDI.exe"
+  ${EndIf}  
   IfErrors 0 FTDI_Installed_ok
   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta"
   FTDI_Installed_ok:
-  Delete "$INSTDIR\Setup_FTDI.exe"
+  Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
+  Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
   
   ; Install WinUSB driver for FTDI 2232H & correct oocd version name
 ${If} ${RunningX64}
