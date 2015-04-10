@@ -34,20 +34,18 @@
 ::
 ::##############################################################################
 @echo off
-CD %~dp0
-echo Cleanup downloaded files
-rmdir /S/Q local-repo
-rmdir /S/Q work
-rmdir /S/Q tmp
-rmdir /S/Q cygwin
-rmdir /S/Q eclipse
-rmdir /S/Q nsis
-rmdir /S/Q openocd
-rmdir /S/Q Firmware
-rmdir /S/Q FTDI_Driver
-del/Q *.exe 
-del/Q *.zip
-del/Q *.zip.*
-del/Q *.tar.gz
-del/Q *.7z
-del/Q *.log
+call get-tools.bat
+
+set FIRMWARE_INSTDIR=Firmware
+set FIRMWARE_URL=https://github.com/ciaa/Firmware/releases/download/0.4.0/Firmware_0.4.0.zip
+
+if not exist Firmware_0_4_0.zip (
+	echo Downloading Firmware...
+	wget --no-check-certificate "%FIRMWARE_URL%" -O Firmware_0_4_0.zip
+)
+
+if not exist %FIRMWARE_INSTDIR% (
+	echo Uncompress...
+	mkdir %FIRMWARE_INSTDIR%
+	unzip Firmware_0_4_0.zip -d %FIRMWARE_INSTDIR%
+)

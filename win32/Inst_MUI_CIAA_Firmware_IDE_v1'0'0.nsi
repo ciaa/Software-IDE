@@ -40,8 +40,10 @@
 ; Las aplicaciones son obligatorias y es opcional los accesos directos
 ;
 !define INSTALL_CYGWIN
+!define INSTALL_FIRMWARE
 !define INSTALL_DRIVERS
 ;!define SKIP_INSTALL_CYGWIN_FILES ; Permite hacer un instalador pequeño sin perder la sección cygwin, pero sin incluir sus archivos
+;!define SKIP_INSTALL_FIRMWARE_FILES ; Permite hacer un instalador pequeño sin perder la sección cygwin, pero sin incluir sus archivos
 ;
 ;--------------------------------
 ;
@@ -79,7 +81,7 @@ FunctionEnd
 Name "CIAA-Firmware-IDE"
 
 ; The file to write
-OutFile "Setup_CIAA_Firmware_IDE.exe"
+OutFile "Setup_CIAA_Firmware_IDE_0_4_0.exe"
 
 ; The default installation directory
 InstallDir C:\CIAA
@@ -119,8 +121,8 @@ InstallDir C:\CIAA
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
    VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE para CIAA Firmware"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "0.3.0"
-   VIProductVersion "0.3.0.0"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "0.4.0"
+   VIProductVersion "0.4.0.0"
 ;--------------------------------
 ; Si termina de instalar Ok,
 ; pongo el desinstalador !!!
@@ -167,6 +169,19 @@ Section "Cygwin-Eclipse" Sec_Cygwin
 SectionEnd
 !endif
 ;
+!ifdef INSTALL_FIRMWARE
+Section "Firmware-0.4.0" Sec_Firmware
+
+   ; Set output path to the installation directory.
+   SetOutPath $INSTDIR
+   ;
+!ifndef SKIP_INSTALL_FIRMWARE_FILES
+   ; Put file there
+   File /r Firmware
+!endif
+SectionEnd
+!endif
+;
 !ifdef INSTALL_DRIVERS
 Section "Drivers" Sec_Drivers
 
@@ -199,14 +214,24 @@ Section "Drivers" Sec_Drivers
    ${EndIf}  
    IfErrors 0 FTDI_Installed_ok
    FTDI_Installed_failed:
-   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta. Los drivers quedarán disponible en el directorio elegido para su instalación posterior manual"
+   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta. Los drivers quedarán disponible en el directorio elegido para su instalación posterior manual"   
+   ;
+   ; We know that host is at least Win XP
+   ${If} ${IsWinXP}
+      ; Host is Win XP
+      File /oname=zadig_Win_XP_2_1_1.exe FTDI_Driver\zadig_xp_2_1_1.exe
+   ${Else}
+      ; Host is newer than XP
+      File /oname=zadig_Win_7_2_1_1.exe FTDI_Driver\zadig_2_1_1.exe      
+   ${EndIf}
+   File /oname=driver_winusb_zadig_ft2232h.png "Images\driver_winusb_zadig_ft2232h.png"
    Goto FTDI_done
    FTDI_Installed_ok:
    Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
    Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
    Delete "$INSTDIR\usbdriver"
   
-   ; Install WinUSB driver for FTDI 2232H & correct oocd version name
+   ; Install WinUSB driver for FTDI 2232H & correct openocd version name
    ${If} ${RunningX64}
       nsExec::ExecToLog "$INSTDIR\usbdriver\amd64\install-filter.exe install --inf=$INSTDIR\usbdriver\FTDI-CIAA.inf"
    ${Else}
@@ -282,6 +307,9 @@ SectionEnd
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
     !ifdef INSTALL_CYGWIN
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Cygwin} "Permite trabajar en un entorno posix like y Eclipse, para usar el toolchain gnu"
+    !endif
+    !ifdef INSTALL_FIRMWARE
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Firmware 0.4.0, solo copia del repo (no es clonado con git!)"
     !endif
     !ifdef INSTALL_DRIVERS
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Drivers} "Permite instalar los drivers, pero debe contar con el Hardware!!!"

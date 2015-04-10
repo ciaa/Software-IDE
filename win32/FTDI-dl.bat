@@ -39,6 +39,8 @@ call get-tools.bat
 set FTDI_INSTDIR=FTDI_Driver
 set FTDI_WIN_XP_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.10.00%%20WHQL%%20Certified.exe
 set FTDI_WIN_7_URL=http://www.ftdichip.com/Drivers/CDM/CDM%%20v2.12.00%%20WHQL%%20Certified.exe
+set ZADIG_WIN_XP_URL=http://zadig.akeo.ie/downloads/zadig_xp_2.1.1.exe
+set ZADIG_WIN_7_URL=http://zadig.akeo.ie/downloads/zadig_2.1.1.exe
 
 if not exist %FTDI_INSTDIR%\CDM_v2_12_00_WHQL_Certified.exe (
 	echo Downloading Certified Win 7 FTDI VCP Drivers...
@@ -52,4 +54,18 @@ if not exist %FTDI_INSTDIR%\CDM_v2_10_00_WHQL_Certified.exe (
 	wget "%FTDI_WIN_XP_URL%" -O CDM_v2_10_00_WHQL_Certified.exe
 	mkdir %FTDI_INSTDIR%
 	move/Y CDM_v2_10_00_WHQL_Certified.exe %FTDI_INSTDIR%\CDM_v2_10_00_WHQL_Certified.exe
+)
+
+if not exist %FTDI_INSTDIR%\zadig_2_1_1.exe (
+	echo Downloading Win7 Zadig, USB driver installation made easy...
+	wget "%ZADIG_WIN_7_URL%" -O zadig_2_1_1.exe
+	mkdir %FTDI_INSTDIR%
+	move/Y zadig_2_1_1.exe %FTDI_INSTDIR%\zadig_2_1_1.exe
+)
+
+if not exist %FTDI_INSTDIR%\zadig_xp_2_1_1.exe (
+	echo Downloading Win XP Zadig, USB driver installation made easy...
+	wget "%ZADIG_WIN_XP_URL%" -O zadig_xp_2_1_1.exe
+	mkdir %FTDI_INSTDIR%
+	move/Y zadig_xp_2_1_1.exe %FTDI_INSTDIR%\zadig_xp_2_1_1.exe
 )
