@@ -280,9 +280,6 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE"
 ;  DeleteRegKey HKLM SOFTWARE\CIAA-Firmware-IDE
 
-  ; Remove files and uninstaller
-  ;Delete $INSTDIR\uninstall.exe
-
   ; Remove shortcuts, if any
   Delete "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
 ;
@@ -294,8 +291,32 @@ Section "Uninstall"
   ; Remove directories used
   RMDir /r "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
   RMDir "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
-  RMDir /r "$INSTDIR"
-
+  RMDir /r "$INSTDIR\cygwin"
+  RMDir /r "$INSTDIR\usbdriver"
+  
+  ; I'm not sure about this folder, 
+  ; RMDir /r "$INSTDIR\local-repo"
+  
+  ; Remove files only if exists (perhaps the user deleted.)
+  IfFileExists "$INSTDIR\driver_winusb_zadig_ft2232h.png" 0 Delete_FTDI
+  Delete "$INSTDIR\driver_winusb_zadig_ft2232h.png"
+  
+  Delete_FTDI:
+  IfFileExists "$INSTDIR\Setup_Win_7_FTDI.exe" 0 Delete_Zadig
+  Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
+  
+  Delete_Zadig:
+  IfFileExists "$INSTDIR\zadig_Win_7_2_1_1.exe" 0 Delete_SetUser
+  Delete "$INSTDIR\zadig_Win_7_2_1_1.exe"
+  
+  Delete_SetUser:
+  IfFileExists "$INSTDIR\SetUsers.bat" 0 Delete_Uninstaller
+  Delete "$INSTDIR\SetUsers.bat"
+  
+  ; Remove uninstaller
+  Delete_Uninstaller:
+  Delete "$INSTDIR\uninstall.exe"
+ 
 SectionEnd
 
 ;--------------------------------
