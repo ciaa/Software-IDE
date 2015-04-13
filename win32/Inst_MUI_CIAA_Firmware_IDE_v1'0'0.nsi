@@ -246,14 +246,14 @@ SectionEnd
 ;Optional section (can be disabled by the user)
 Section "Acceso directo en Menu Inicio" SecMenuInicio
 
-  CreateDirectory "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
-  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+   CreateDirectory "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
+   CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 ;
-  !ifdef INSTALL_CYGWIN
-  SetOutPath "$INSTDIR\cygwin\"
-  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
-  CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
-  !endif
+   !ifdef INSTALL_CYGWIN
+   SetOutPath "$INSTDIR\cygwin\"
+   CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
+   CreateShortCut "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
+   !endif
 ;
 SectionEnd
 
@@ -262,12 +262,12 @@ SectionEnd
 ;
 ; Optional section (can be disabled by the user)
 Section "Acceso directo en Escritorio" SecEscritorio
-  ;
-  !ifdef INSTALL_CYGWIN
-  SetOutPath "$INSTDIR\cygwin\"
-  CreateShortCut "$DESKTOP\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
-  CreateShortCut "$DESKTOP\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
-  !endif
+   ;
+   !ifdef INSTALL_CYGWIN
+   SetOutPath "$INSTDIR\cygwin\"
+   CreateShortCut "$DESKTOP\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
+   CreateShortCut "$DESKTOP\CIAA IDE.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
+   !endif
 ;
 SectionEnd
 
@@ -276,47 +276,40 @@ SectionEnd
 ;--------------------------------
 Section "Uninstall"
   
-  ; Remove registry keys
-  DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE"
-;  DeleteRegKey HKLM SOFTWARE\CIAA-Firmware-IDE
+   ; Remove registry keys
+   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-Firmware-IDE"
 
-  ; Remove shortcuts, if any
-  Delete "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
+   ;Remove shortcuts, if any
+   Delete "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
 ;
-  !ifdef INSTALL_CYGWIN
-  Delete "$DESKTOP\CIAA cygwin.lnk"
-  Delete "$DESKTOP\CIAA IDE.lnk"
-  !endif
+   !ifdef INSTALL_CYGWIN
+   Delete "$DESKTOP\CIAA cygwin.lnk"
+   Delete "$DESKTOP\CIAA IDE.lnk"
+   !endif
 
-  ; Remove directories used
-  RMDir /r "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
-  RMDir "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
-  RMDir /r "$INSTDIR\cygwin"
-  RMDir /r "$INSTDIR\usbdriver"
+   ; Remove directories used
+   RMDir /r "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
+   RMDir "$SMPROGRAMS\CIAA\CIAA-Firmware-IDE"
+   RMDir /r "$INSTDIR\cygwin"
+   RMDir /r "$INSTDIR\usbdriver"
+   MessageBox MB_ICONQUESTION|MB_YESNO "¿Está seguro que desea eliminar el directorio 'Firmware' con todo su contenido?" IDNO Uninstall_Skip_Firmware
+   RMDir /r "$INSTDIR\Firmware"
+   Uninstall_Skip_Firmware:
+
+   ; Remove file...if it doens't exist, it fails and continue
+   Delete "$INSTDIR\driver_winusb_zadig_ft2232h.png"
+   Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
+   Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
+   Delete "$INSTDIR\zadig_Win_7_2_1_1.exe"
+   Delete "$INSTDIR\zadig_Win_XP_2_1_1.exe"  
+   Delete "$INSTDIR\SetUsers.bat"
   
-  ; I'm not sure about this folder, 
-  ; RMDir /r "$INSTDIR\local-repo"
-  
-  ; Remove files only if exists (perhaps the user deleted.)
-  IfFileExists "$INSTDIR\driver_winusb_zadig_ft2232h.png" 0 Delete_FTDI
-  Delete "$INSTDIR\driver_winusb_zadig_ft2232h.png"
-  
-  Delete_FTDI:
-  IfFileExists "$INSTDIR\Setup_Win_7_FTDI.exe" 0 Delete_Zadig
-  Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
-  
-  Delete_Zadig:
-  IfFileExists "$INSTDIR\zadig_Win_7_2_1_1.exe" 0 Delete_SetUser
-  Delete "$INSTDIR\zadig_Win_7_2_1_1.exe"
-  
-  Delete_SetUser:
-  IfFileExists "$INSTDIR\SetUsers.bat" 0 Delete_Uninstaller
-  Delete "$INSTDIR\SetUsers.bat"
-  
-  ; Remove uninstaller
-  Delete_Uninstaller:
-  Delete "$INSTDIR\uninstall.exe"
- 
+   ; Remove uninstaller
+   Delete_Uninstaller:
+   Delete "$INSTDIR\uninstall.exe"
+
+   ; Remove install dir only if it is empty...
+   RMDir "$INSTDIR"
 SectionEnd
 
 ;--------------------------------
