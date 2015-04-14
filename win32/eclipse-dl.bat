@@ -68,8 +68,8 @@ if not exist %ECLIPSE_INSTDIR%\eclipse\plugins\ilg.gnuarmeclipse.managedbuild.cr
 	echo Install eclipse plugins
 	%ECLIPSE_INSTDIR%\eclipse\eclipse -clean -purgeHistory -nosplash -consolelog -application org.eclipse.equinox.p2.director -repository %ECLIPSEREPOS% -installIU %ECLIPSEPKGS%
 )
-if exist %ECLIPSE_INSTDIR%\eclipse\plugins\org.eclipse.platform_* (
-	for /f "delims=" %%a in ('dir %ECLIPSE_INSTDIR%\eclipse\plugins\org.eclipse.platform_"*" /on /ad /b') do @set ECLIPSE_SPLASH_FOLDER=%%a
+if exist %ECLIPSE_INSTDIR%eclipse\plugins\org.eclipse.platform_* (
+	for /f "delims=" %%a in ('dir %ECLIPSE_INSTDIR%eclipse\plugins\org.eclipse.platform_"*" /on /ad /b') do @set ECLIPSE_SPLASH_FOLDER=%%a
 	echo Replacing Eclipse splash.bmp
-	copy /y "%CD%\Images\splash.bmp" "%ECLIPSE_INSTDIR%\eclipse\plugins\%ECLIPSE_SPLASH_FOLDER%\splash.bmp"
+	copy /y "%CD%\Images\splash.bmp" "%ECLIPSE_INSTDIR%eclipse\plugins\%ECLIPSE_SPLASH_FOLDER%\splash.bmp"
 )
