@@ -6,9 +6,10 @@
 *.7z
 /**/Firmware
 /**/cygwin
-/**/nsis
-/**/nsis-2.46
+/**/nsis*
+/**/openocd*
 /**/FTDI_Driver
 /**/IDE4PLC
 /**/usbdriver
 /**/local-repo
+/**/Linux*

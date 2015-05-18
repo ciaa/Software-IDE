@@ -1,7 +1,7 @@
 ;##############################################################################
 ;
-; Copyright 2014, 2015, Martin Ribelotta
 ; Copyright 2014, 2015, Juan Cecconi
+; Copyright 2014, 2015, Martin Ribelotta
 ; Copyright 2014, 2015, Natalia Requejo
 ;
 ; This file is part of CIAA IDE.
@@ -43,10 +43,12 @@
 !define INSTALL_FIRMWARE
 !define INSTALL_DRIVERS
 !define INSTALL_IDE4PLC
+!define INSTALL_LINUX
 #!define SKIP_INSTALL_CYGWIN_FILES ; Permite hacer un instalador pequeño sin perder la sección cygwin, pero sin incluir sus archivos
 #!define SKIP_INSTALL_FIRMWARE_FILES ; Permite hacer un instalador pequeño sin perder la sección Firmware, pero sin incluir sus archivos
 #!define SKIP_INSTALL_DRIVERS_FILES ; Permite hacer un instalador pequeño sin perder la sección Drivers, pero sin incluir sus archivos
 #!define SKIP_INSTALL_IDE4PLC_FILES ; Permite hacer un instalador pequeño sin perder la sección IDE4PLC, pero sin incluir sus archivos
+#!define SKIP_INSTALL_LINUX_FILES ; Permite hacer un instalador pequeño sin perder la sección Linux, pero sin incluir sus archivos
 ;
 ;--------------------------------
 ;
@@ -81,10 +83,10 @@ FunctionEnd
 ;
 ;
 ; The name of the installer
-Name "CIAA-IDE"
+Name "CIAA-IDE-Suite"
 
 ; The file to write
-OutFile "Setup_CIAA_IDE_1_1_0.exe"
+OutFile "Setup_CIAA_IDE_Suite_1_1_0.exe"
 
 ; The default installation directory
 InstallDir C:\CIAA
@@ -118,12 +120,12 @@ InstallDir C:\CIAA
 
    !insertmacro MUI_LANGUAGE "Spanish"
    ;
-   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador del IDE para la CIAA"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador del IDE completo para la CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE para la CIAA"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE completo para la CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "1.1.0"
    VIProductVersion "1.1.0.0"
 ;--------------------------------
@@ -135,10 +137,10 @@ Function .onInstSuccess
    ;WriteRegStr HKLM SOFTWARE\CIAA "Install_Dir" "$INSTDIR"
   
    ; Write the uninstall keys for Windows
-   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE" "DisplayName" "CIAA-IDE"
-   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE" "UninstallString" '"$INSTDIR\uninstall.exe"'
-   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE" "NoModify" 1
-   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE" "NoRepair" 1
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE-Suite" "DisplayName" "CIAA-IDE-Suite"
+   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE-Suite" "UninstallString" '"$INSTDIR\uninstall.exe"'
+   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE-Suite" "NoModify" 1
+   WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE-Suite" "NoRepair" 1
    WriteUninstaller "uninstall.exe"
    ; TODO Add driver code here
 FunctionEnd
@@ -163,10 +165,8 @@ Section "Cygwin-Eclipse" Sec_Cygwin
    ; Correct openocd version name
    ${If} ${RunningX64}
       File /oname=cygwin\etc\profile.d\openocd.sh openocd-x64.sh
-      CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd-x64-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin-x64\openocd.exe"
    ${Else}
       File /oname=cygwin\etc\profile.d\openocd.sh openocd-x86.sh
-      CopyFiles "$INSTDIR\cygwin\usr\local\openocd\bin\openocd-0.8.0.exe" "$INSTDIR\cygwin\usr\local\openocd\bin\openocd.exe"
    ${EndIf}
 !endif
 SectionEnd
@@ -186,7 +186,7 @@ SectionEnd
 !endif
 ;
 !ifdef INSTALL_IDE4PLC
-Section "IDE4PLC-0.0.9" Sec_IDE4PLC
+Section "IDE4PLC-1.0.0" Sec_IDE4PLC
 
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -194,6 +194,19 @@ Section "IDE4PLC-0.0.9" Sec_IDE4PLC
 !ifndef SKIP_INSTALL_IDE4PLC_FILES
    ; Put file there
    File /r IDE4PLC
+!endif
+SectionEnd
+!endif
+;
+!ifdef INSTALL_LINUX
+Section "CIAA-Linux" Sec_Linux
+
+   ; Set output path to the installation directory.
+   SetOutPath $INSTDIR
+   ;
+!ifndef SKIP_INSTALL_LINUX_FILES
+   ; Put file there
+   File /r Linux
 !endif
 SectionEnd
 !endif
@@ -264,19 +277,27 @@ SectionEnd
 ;Optional section (can be disabled by the user)
 Section "Acceso directo en Menu Inicio" SecMenuInicio
 
-   CreateDirectory "$SMPROGRAMS\CIAA\CIAA-IDE"
-   CreateShortCut "$SMPROGRAMS\CIAA\CIAA-IDE\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
+   CreateDirectory "$SMPROGRAMS\CIAA\"
+   CreateShortCut "$SMPROGRAMS\CIAA\Uninstall.lnk" "$INSTDIR\uninstall.exe" "" "$INSTDIR\uninstall.exe" 0
 ;
    !ifdef INSTALL_CYGWIN
    SetOutPath "$INSTDIR\cygwin\"
+   CreateDirectory "$SMPROGRAMS\CIAA\CIAA-IDE"
    CreateShortCut "$SMPROGRAMS\CIAA\CIAA-IDE\CIAA cygwin.lnk" "$INSTDIR\cygwin\bin\mintty.exe" "$INSTDIR\cygwin\bin\bash --login" "$INSTDIR\cygwin\bin\mintty.exe" 0
    CreateShortCut "$SMPROGRAMS\CIAA\CIAA-IDE\CIAA Eclipse.lnk" "$INSTDIR\cygwin\StartEclipseIDE.bat" "" "$INSTDIR\cygwin\usr\local\eclipse\eclipse.exe" 0
    !endif
 
    !ifdef INSTALL_IDE4PLC
    SetOutPath "$INSTDIR\IDE4PLC\"
-   CreateShortCut "$SMPROGRAMS\CIAA\CIAA-IDE\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.exe" 0
+   CreateDirectory "$SMPROGRAMS\CIAA\IDE4PLC"
+   CreateShortCut "$SMPROGRAMS\CIAA\IDE4PLC\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.exe" 0
    !endif
+
+   !ifdef INSTALL_LINUX
+   SetOutPath "$INSTDIR\Linux\"
+   CreateDirectory "$SMPROGRAMS\CIAA\Linux"
+   CreateShortCut "$SMPROGRAMS\CIAA\Linux\Readme.lnk" "Notepad.exe" "$INSTDIR\Linux\README" "Notepad.exe" 0
+   !endif   
 ;
 SectionEnd
 
@@ -306,10 +327,13 @@ SectionEnd
 Section "Uninstall"
   
    ; Remove registry keys
-   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE"
+   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\CIAA-IDE-Suite"
 
    ;Remove shortcuts, if any
    Delete "$SMPROGRAMS\CIAA\CIAA-IDE"
+   Delete "$SMPROGRAMS\CIAA\IDE4PLC"
+   Delete "$SMPROGRAMS\CIAA\Linux"   
+   Delete "$SMPROGRAMS\CIAA\"      
 ;
    !ifdef INSTALL_CYGWIN
    Delete "$DESKTOP\CIAA cygwin.lnk"
@@ -319,7 +343,7 @@ Section "Uninstall"
    !ifdef INSTALL_IDE4PLC
    Delete "$DESKTOP\CIAA IDE4PLC.lnk"
    !endif
-   
+     
    ; Remove directories used
    RMDir /r "$SMPROGRAMS\CIAA"
    RMDir /r "$INSTDIR\cygwin"
@@ -328,6 +352,7 @@ Section "Uninstall"
    RMDir /r "$INSTDIR\Firmware"
    Uninstall_Skip_Firmware:
    RMDir /r "$INSTDIR\IDE4PLC"
+   RMDir /r "$INSTDIR\Linux"   
    
    ; Remove file...if it doens't exist, it fails and continue
    Delete "$INSTDIR\driver_winusb_zadig_ft2232h.png"
@@ -356,13 +381,16 @@ SectionEnd
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Cygwin} "Permite trabajar en un entorno posix like y Eclipse, para usar el toolchain gnu"
     !endif
     !ifdef INSTALL_FIRMWARE
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Firmware 0.4.1, solo copia del repo (no es clonado con git!)"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Permite programar la CIAA mediente lenguaje C, basado en el Firmware 0.4.1, siendo solo copia del repo (no es clonado con git!)"
     !endif
     !ifdef INSTALL_DRIVERS
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Drivers} "Permite instalar los drivers, pero debe contar con el Hardware!!!"
     !endif
     !ifdef INSTALL_IDE4PLC
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_IDE4PLC} "Permite programar la CIAA mediante LADDER como un PLC"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_IDE4PLC} "Permite programar la CIAA mediante lenguaje LADDER como un PLC"
+    !endif    
+    !ifdef INSTALL_LINUX
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Linux} "Ejemplo para CIAA-NXP de Linux"
     !endif    
     !insertmacro MUI_DESCRIPTION_TEXT ${SecMenuInicio} "Accesos Directos en el Menu Inicio"
     !insertmacro MUI_DESCRIPTION_TEXT ${SecEscritorio} "Accesos Directos en el Escritorio"

@@ -34,3 +34,4 @@
 #
 ###############################################################################
 export PATH=/usr/local/openocd/bin-x64:$PATH
+alias openocd=openocd.exe
