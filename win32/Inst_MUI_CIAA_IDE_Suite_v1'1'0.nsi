@@ -33,28 +33,13 @@
 ; POSSIBILITY OF SUCH DAMAGE.
 ;
 ;##############################################################################
-
-; Instalador de las aplicacines que se indiquen con el "define", y busca la
-; aplicacion correspondiente en el directorio root de esta carpeta
-; para luego copiarla en el directorio destino
-; Las aplicaciones son obligatorias y es opcional los accesos directos
 ;
-!define INSTALL_CYGWIN
-!define INSTALL_FIRMWARE
-!define INSTALL_DRIVERS
-!define INSTALL_IDE4PLC
-!define INSTALL_LINUX
-#!define SKIP_INSTALL_CYGWIN_FILES ; Permite hacer un instalador pequeño sin perder la sección cygwin, pero sin incluir sus archivos
-#!define SKIP_INSTALL_FIRMWARE_FILES ; Permite hacer un instalador pequeño sin perder la sección Firmware, pero sin incluir sus archivos
-#!define SKIP_INSTALL_DRIVERS_FILES ; Permite hacer un instalador pequeño sin perder la sección Drivers, pero sin incluir sus archivos
-#!define SKIP_INSTALL_IDE4PLC_FILES ; Permite hacer un instalador pequeño sin perder la sección IDE4PLC, pero sin incluir sus archivos
-#!define SKIP_INSTALL_LINUX_FILES ; Permite hacer un instalador pequeño sin perder la sección Linux, pero sin incluir sus archivos
-;
-;--------------------------------
-;
-
 SetCompressor /SOLID lzma
 
+; Rename Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.config as Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh
+; and define which sections and files you want to include
+!include "Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh"
+;
 !include "x64.nsh"
 !include "WinVer.nsh"
 
@@ -70,9 +55,9 @@ Function .onInit
 	Pop $0 ; $0 has '1' if the user closed the splash screen early,
 			; '0' if everything closed normally, and '-1' if some error occurred.
    ${If} ${AtLeastWinXP}
-      ; Tiene al menos Windows XP para instalar CIAA IDE!!!
+      ; At least Windows XP !!!
    ${else}    
-      MessageBox MB_ICONSTOP "Necesita al menos Windows XP para instalar 'CIAA IDE'"
+      MessageBox MB_ICONSTOP "Necesita al menos Windows XP para instalar 'CIAA-IDE-Suite'"
       Quit
    ${EndIf}
 FunctionEnd
@@ -86,7 +71,7 @@ FunctionEnd
 Name "CIAA-IDE-Suite"
 
 ; The file to write
-OutFile "Setup_CIAA_IDE_Suite_1_1_0.exe"
+OutFile "Setup_CIAA_IDE_Suite_v1_1_0.exe"
 
 ; The default installation directory
 InstallDir C:\CIAA
@@ -121,7 +106,7 @@ InstallDir C:\CIAA
    !insertmacro MUI_LANGUAGE "Spanish"
    ;
    VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador del IDE completo para la CIAA"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador de CIAA-IDE-Suite"
    VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
@@ -173,7 +158,7 @@ SectionEnd
 !endif
 ;
 !ifdef INSTALL_FIRMWARE
-Section "Firmware-0.4.1" Sec_Firmware
+Section "Firmware-v0.4.1" Sec_Firmware
 
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -186,7 +171,7 @@ SectionEnd
 !endif
 ;
 !ifdef INSTALL_IDE4PLC
-Section "IDE4PLC-1.0.0" Sec_IDE4PLC
+Section "IDE4PLC-v1.0.0" Sec_IDE4PLC
 
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -290,7 +275,7 @@ Section "Acceso directo en Menu Inicio" SecMenuInicio
    !ifdef INSTALL_IDE4PLC
    SetOutPath "$INSTDIR\IDE4PLC\"
    CreateDirectory "$SMPROGRAMS\CIAA\IDE4PLC"
-   CreateShortCut "$SMPROGRAMS\CIAA\IDE4PLC\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.exe" 0
+   CreateShortCut "$SMPROGRAMS\CIAA\IDE4PLC\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\IDE4PLC.ico" 0 SW_SHOWNORMAL 
    !endif
 
    !ifdef INSTALL_LINUX
@@ -315,7 +300,7 @@ Section "Acceso directo en Escritorio" SecEscritorio
 
    !ifdef INSTALL_IDE4PLC
    SetOutPath "$INSTDIR\IDE4PLC\"
-   CreateShortCut "$DESKTOP\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.exe" 0
+   CreateShortCut "$DESKTOP\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\IDE4PLC.ico" 0 SW_SHOWNORMAL 
    !endif
 
 ;

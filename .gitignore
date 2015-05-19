@@ -13,3 +13,5 @@
 /**/usbdriver
 /**/local-repo
 /**/Linux*
+# Own Config file
+Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh
