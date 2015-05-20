@@ -229,7 +229,7 @@ Section "Drivers" Sec_Drivers
    ${EndIf}  
    IfErrors 0 FTDI_Installed_ok
    FTDI_Installed_failed:
-   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta. Los drivers quedarán disponible en el directorio elegido para su instalación posterior manual"   
+   MessageBox MB_ICONSTOP "El driver FTDI pudo no haber sido instalado correctamente. Por favor vea en la web del Proyecto-CIAA para realizarlo manualmente si hiciera falta. Los drivers quedarán disponible en el directorio elegido para su instalación manual posterior"   
    ;
    ; We know that host is at least Win XP
    ${If} ${IsWinXP}
@@ -240,6 +240,13 @@ Section "Drivers" Sec_Drivers
       File /oname=zadig_Win_7_2_1_1.exe FTDI_Driver\zadig_2_1_1.exe      
    ${EndIf}
    File /oname=driver_winusb_zadig_ft2232h.png "Images\driver_winusb_zadig_ft2232h.png"
+   ; Shows Instructions, web page and files to do the job!
+   MessageBox MB_ICONINFORMATION "El reemplazo del driver FTDI debería hacerse como se mostrará a continuación. Esta imagen permanecerá disponible en el directorio elegido para su instalación manual posterior"
+   File /oname=driver_winusb_zadig_ft2232h.png "Images\driver_winusb_zadig_ft2232h.png"
+   ExecShell "open" "$INSTDIR\driver_winusb_zadig_ft2232h.png"
+   ExecShell "open" "http://proyecto-ciaa.com.ar/devwiki/doku.php?id=desarrollo:firmware:instalacion_sw#openocd"
+   ExecShell "open" "$INSTDIR\"
+   ;
    Goto FTDI_done
    FTDI_Installed_ok:
    Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
