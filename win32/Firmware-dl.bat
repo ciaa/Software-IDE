@@ -37,15 +37,15 @@
 call get-tools.bat
 
 set FIRMWARE_INSTDIR=Firmware
-set FIRMWARE_URL=https://github.com/ciaa/Firmware/releases/download/0.4.1/Firmware_0.4.1.zip
+set FIRMWARE_URL=https://github.com/ciaa/Firmware/releases/download/0.5.0/Firmware_0.5.0.zip
 
-if not exist Firmware_0_4_1.zip (
+if not exist Firmware_0_5_0.zip (
 	echo Downloading Firmware...
-	wget --no-check-certificate "%FIRMWARE_URL%" -O Firmware_0_4_1.zip
+	wget --no-check-certificate "%FIRMWARE_URL%" -O Firmware_0_5_0.zip
 )
 
 if not exist %FIRMWARE_INSTDIR% (
 	echo Uncompress...
 	mkdir %FIRMWARE_INSTDIR%
-	unzip Firmware_0_4_1.zip -d %FIRMWARE_INSTDIR%
+	unzip Firmware_0_5_0.zip -d %FIRMWARE_INSTDIR%
 )
