@@ -34,26 +34,17 @@
 ::
 ::##############################################################################
 @echo off
-CD %~dp0
-echo Download prerequisites to create installer
-call get-tools.bat > get-tools.log
-echo Download cygwin...
-call cyg-download.bat >  cyg-download.log
-echo Install cygwin in temporal directory...
-call cyg-install.bat > cyg-install.log
-echo Download eclipse/JRE/plugins...
-call eclipse-dl.bat > eclipse-dl.log
-echo Download arm gcc embedded...
-call arm-embedded-dl.bat > arm-embedded-dl.log
-echo Download OpenOCD...
-call openocd-dl.bat > openocd-dl.log
-echo Download NSIS...
-call nsis-dl.bat > nsis-dl.log
-echo Download FTDI Drivers...
-call FTDI-dl.bat > FTDI-dl.log
-echo Download Firmware...
-call Firmware-dl.bat > Firmware-dl.log
-echo Download IDE4PLC...
-call IDE4PLC-dl.bat > IDE4PLC-dl.log
-echo Done. Press any key to end
-pause
+call get-tools.bat
+
+set IDE4PLC_INSTDIR=IDE4PLC
+set IDE4PLC_URL=https://github.com/ciaa/IDE4PLC/releases/download/v1.0.1win/IDE4PLCv1.0.1-Win.zip
+
+if not exist IDE4PLCv1.0.1-Win.zip (
+	echo Downloading IDE4PLC...
+	wget --no-check-certificate "%IDE4PLC_URL%" -O IDE4PLCv1.0.1-Win.zip
+)
+
+if not exist %IDE4PLC_INSTDIR% (
+	echo Uncompress...
+	unzip IDE4PLCv1.0.1-Win.zip
+)
