@@ -167,6 +167,16 @@ Section "Firmware-v0.4.1" Sec_Firmware
    ; Put file there
    File /r Firmware
 !endif
+!ifndef SKIP_CLONE_FIRMWARE_REPO
+   System::Call 'Kernel32::SetEnvironmentVariable(t, t) i("CIAA_SUITE_PATH", "$INSTDIR").r0'
+   StrCmp $0 0 Env_Var_Error
+      File /oname=Firmware_Clone.bat Firmware_Clone.bat
+      ExecWait '"$INSTDIR\Firmware_Clone.bat"' $0
+      Goto done
+   Env_Var_Error:
+      MessageBox MB_OK "No puede definirse la variable de entorno para el Path de instalacion"
+   done:
+!endif
 SectionEnd
 !endif
 ;

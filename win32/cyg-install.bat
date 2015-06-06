@@ -93,4 +93,5 @@ copy/Y %LOCALDIR%\Cygwin.bat.in %ROOTDIR%\Cygwin.bat
 copy/Y %LOCALDIR%\StartEclipseIDE.bat.in %ROOTDIR%\StartEclipseIDE.bat
 copy/Y %LOCALDIR%\arm-none-eabi.sh %ROOTDIR%\etc\profile.d\arm-none-eabi.sh
 copy/Y %LOCALDIR%\eclipse.sh %ROOTDIR%\etc\profile.d\eclipse.sh
+copy/Y %LOCALDIR%\Firmware_Clone.sh %ROOTDIR%\usr\local\bin\Firmware_Clone.sh
 copy/Y %LOCALDIR%\testbench.sh %ROOTDIR%\usr\local\bin\testbench.sh
