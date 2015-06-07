@@ -1,10 +1,8 @@
 ::##############################################################################
 ::
-:: Copyright 2014, ACSE & CADIEEL
-::    ACSE   : http://www.sase.com.ar/asociacion-civil-sistemas-embebidos/ciaa/
-::    CADIEEL: http://www.cadieel.org.ar
+:: Copyright 2015, Juan Cecconi
 ::
-:: This file is part of CIAA Firmware.
+:: This file is part of CIAA IDE.
 ::
 :: Redistribution and use in source and binary forms, with or without
 :: modification, are permitted provided that the following conditions are met:
@@ -34,28 +32,13 @@
 ::
 ::##############################################################################
 @echo off
-CD %~dp0
-set WGETURL=http://users.ugent.be/~bpuype/cgi-bin/fetch.pl?dl=wget/wget.exe
-if not exist %CD%\bin\wget.exe (
-	echo "Obtaning wget"
-	powershell -command "& { (New-Object Net.WebClient).DownloadFile('%WGETURL%', 'wget.exe') }"
-)
-set PATH=.;.\bin\;%PATH%
-if not exist tar.exe (
-	echo "Obtaning tar.exe ..."
-	wget http://www2.cs.uidaho.edu/~jeffery/win32/tar.exe
-)
-if not exist gunzip.exe (
-	echo "Obtaning gunzip.exe ..."
-	wget http://www2.cs.uidaho.edu/~jeffery/win32/gunzip.exe
-)
-if not exist unzip.exe (
-	echo "Obtaning unzip.exe ..."
-	wget http://stahlworks.com/dev/unzip.exe
-)
-if not exist 7za.exe (
-	echo "Obtaning 7za920.zip ..."
-	wget http://ufpr.dl.sourceforge.net/project/sevenzip/7-Zip/9.20/7za920.zip
-	echo "extracting 7za.exe ..."
-	unzip 7za920.zip 7za.exe
-)
+
+echo Defining environment variables...
+set FIRMWARE_VERSION="0.5.0"
+set OPENOCD_VERSION="0.9.0"
+set NSIS_VERSION="2.46"
+set IDE4PLC_VERSION="1.0.1"
+set FTDI_XP_VERSION="2.10.00"
+set FTDI_WIN7_VERSION="2.12.00"
+set ZADIG_XP_VERSION="2.1.1"
+set ZADIG_WIN7_VERSION="2.1.1"

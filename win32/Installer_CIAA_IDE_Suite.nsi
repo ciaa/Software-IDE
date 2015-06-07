@@ -36,31 +36,22 @@
 ;
 SetCompressor /SOLID lzma
 
-; Rename Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.config as Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh
+; Rename Config_Installer_CIAA_IDE_Suite.config as Config_Installer_CIAA_IDE_Suite.nsh
 ; and define which sections and files you want to include
-!include "Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh"
+!include "Config_Installer_CIAA_IDE_Suite.nsh"
 ;
 !include "x64.nsh"
 !include "WinVer.nsh"
 
 ;Include Modern UI
-  !include "MUI.nsh"
+!include "MUI.nsh"
 ;
-Function .onInit
-	# the plugins dir is automatically deleted when the installer exits
-	InitPluginsDir
-	File /oname=$PLUGINSDIR\splash.bmp "Images\Logo.bmp"
-	splash::show 3000 $PLUGINSDIR\splash
 
-	Pop $0 ; $0 has '1' if the user closed the splash screen early,
-			; '0' if everything closed normally, and '-1' if some error occurred.
-   ${If} ${AtLeastWinXP}
-      ; At least Windows XP !!!
-   ${else}    
-      MessageBox MB_ICONSTOP "Necesita al menos Windows XP para instalar 'CIAA-IDE-Suite'"
-      Quit
-   ${EndIf}
-FunctionEnd
+; Define Vars with version of each section
+!include "Versions_Installer_CIAA_IDE_Suite.nsh"
+
+; Vars
+Var Firmware_Section_Last_Sel ; Mutually Exclusive Section (Repo / Copy)
 ;
 ;--------------------------------
 ;
@@ -68,10 +59,10 @@ FunctionEnd
 ;
 ;
 ; The name of the installer
-Name "CIAA-IDE-Suite"
+Name "CIAA-IDE-Suite v${CIAA_IDE_SUITE_VERSION}"
 
 ; The file to write
-OutFile "Setup_CIAA_IDE_Suite_v1_1_0.exe"
+OutFile "Setup_CIAA_IDE_Suite_v${CIAA_IDE_SUITE_VERSION}.exe"
 
 ; The default installation directory
 InstallDir C:\CIAA
@@ -105,14 +96,14 @@ InstallDir C:\CIAA
 
    !insertmacro MUI_LANGUAGE "Spanish"
    ;
-   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite v${CIAA_IDE_SUITE_VERSION}"
    VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador de CIAA-IDE-Suite"
    VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
    VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE completo para la CIAA"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" "1.1.0"
-   VIProductVersion "1.1.0.0"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" ${CIAA_IDE_SUITE_VERSION}
+   VIProductVersion "${CIAA_IDE_SUITE_VERSION}.0"
 ;--------------------------------
 ; Si termina de instalar Ok,
 ; pongo el desinstalador !!!
@@ -129,7 +120,7 @@ Function .onInstSuccess
    WriteUninstaller "uninstall.exe"
    ; TODO Add driver code here
 FunctionEnd
-
+ 
 ;--------------------------------
 ;	   Secciones 
 ;--------------------------------
@@ -158,30 +149,37 @@ SectionEnd
 !endif
 ;
 !ifdef INSTALL_FIRMWARE
-Section "Firmware-v0.4.1" Sec_Firmware
-
+SubSection "Firmware v${FIRMWARE_VERSION}" Sec_Firmware
+   ;
+   Section "Firmware Clone Repo" Sec_Firmware_Repo
+!ifndef SKIP_CLONE_FIRMWARE_REPO
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
-   ;
-!ifndef SKIP_INSTALL_FIRMWARE_FILES
-   ; Put file there
-   File /r Firmware
-!endif
-!ifndef SKIP_CLONE_FIRMWARE_REPO
    System::Call 'Kernel32::SetEnvironmentVariable(t, t) i("CIAA_SUITE_PATH", "$INSTDIR").r0'
    StrCmp $0 0 Env_Var_Error
       File /oname=Firmware_Clone.bat Firmware_Clone.bat
       ExecWait '"$INSTDIR\Firmware_Clone.bat"' $0
+      Delete "$INSTDIR\Firmware_Clone.bat"
       Goto done
    Env_Var_Error:
       MessageBox MB_OK "No puede definirse la variable de entorno para el Path de instalacion"
    done:
+!endif   
+   SectionEnd
+   
+   Section /o "Copia de Firmware v${FIRMWARE_VERSION}" Sec_Firmware_Copy
+!ifndef SKIP_INSTALL_FIRMWARE_FILES
+   ; Set output path to the installation directory.
+   SetOutPath $INSTDIR
+   ; Put file there
+   File /r Firmware
 !endif
-SectionEnd
+   SectionEnd
+SubSectionEnd   
 !endif
 ;
 !ifdef INSTALL_IDE4PLC
-Section "IDE4PLC-v1.0.0" Sec_IDE4PLC
+Section "IDE4PLC v${IDE4PLC_VERSION}" Sec_IDE4PLC
 
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -383,7 +381,9 @@ SectionEnd
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Cygwin} "Permite trabajar en un entorno posix like y Eclipse, para usar el toolchain gnu"
     !endif
     !ifdef INSTALL_FIRMWARE
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Permite programar la CIAA mediente lenguaje C, basado en el Firmware 0.4.1, siendo solo copia del repo (no es clonado con git!)"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Permite programar la CIAA mediente lenguaje C, basado en el CIAA Firmware"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Repo} "Descarga online del repositorio mediante 'git clone' de CIAA Firmware, y hace un branch al tag v${FIRMWARE_VERSION}"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Copy} "Instala solo UNA COPIA de CIAA Firmware v${FIRMWARE_VERSION}"
     !endif
     !ifdef INSTALL_DRIVERS
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Drivers} "Permite instalar los drivers, pero debe contar con el Hardware!!!"
@@ -398,3 +398,78 @@ SectionEnd
     !insertmacro MUI_DESCRIPTION_TEXT ${SecEscritorio} "Accesos Directos en el Escritorio"
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
   ;
+;--------------------------------
+; 
+;--------------------------------  
+Function .onInit
+	# the plugins dir is automatically deleted when the installer exits
+	InitPluginsDir
+	File /oname=$PLUGINSDIR\splash.bmp "Images\Logo.bmp"
+	splash::show 3000 $PLUGINSDIR\splash
+
+	Pop $0 ; $0 has '1' if the user closed the splash screen early,
+			; '0' if everything closed normally, and '-1' if some error occurred.
+   ${If} ${AtLeastWinXP}
+      ; At least Windows XP !!!
+   ${else}    
+      MessageBox MB_ICONSTOP "Necesita al menos Windows XP para instalar 'CIAA-IDE-Suite'"
+      Quit
+   ${EndIf}
+   ;
+   Push $1
+ 
+   StrCpy $Firmware_Section_Last_Sel ${Sec_Firmware_Repo} ; Default Section...
+   SectionGetFlags ${Sec_Firmware_Repo} $1
+   IntOp $1 $1 | ${SF_SELECTED}
+   SectionSetFlags ${Sec_Firmware_Repo} $1
+
+   SectionGetFlags ${Sec_Firmware_Copy} $1
+   IntOp $1 $1 & ${SECTION_OFF}
+   SectionSetFlags ${Sec_Firmware_Copy} $1
+
+   Pop $1
+FunctionEnd
+
+;--------------------------------
+; 
+;--------------------------------
+Function .onSelChange 
+   Push $1
+	Push $2
+   Push $3
+ 
+	SectionGetFlags ${Sec_Firmware_Repo} $1
+   IntOp $1 $1 & ${SF_SELECTED}
+   SectionGetFlags ${Sec_Firmware_Copy} $2
+   IntOp $2 $2 & ${SF_SELECTED}
+   
+   IntOp $3 $1 | $2
+   ${If} $3 == "0" 
+      StrCpy $Firmware_Section_Last_Sel ""
+      Return
+   ${EndIf}
+   
+   StrCmp $Firmware_Section_Last_Sel ${Sec_Firmware_Repo} Old_Was_FW_Repo
+      ; Sec_Firmware_Repo was unselected...Is it selected now? => unselect Sec_Firmware_Copy
+      ${If} $1 == "1"
+         SectionGetFlags ${Sec_Firmware_Copy} $1
+         IntOp $1 $1 & ${SECTION_OFF}
+         SectionSetFlags ${Sec_Firmware_Copy} $1
+         StrCpy $Firmware_Section_Last_Sel ${Sec_Firmware_Repo}
+      ${EndIf}
+      Goto ExitSelChange
+   Old_Was_FW_Repo:
+      ; Sec_Firmware_Copy was unselected...Is it selected now? => unselect Sec_Firmware_Repo
+      ${If} $2 == "1"
+         ;MessageBox MB_ICONINFORMATION "E:"
+         SectionGetFlags ${Sec_Firmware_Repo} $2
+         IntOp $2 $2 & ${SECTION_OFF}
+         SectionSetFlags ${Sec_Firmware_Repo} $2
+         StrCpy $Firmware_Section_Last_Sel ${Sec_Firmware_Copy}
+      ${EndIf}
+   
+   ExitSelChange:
+   Pop $3
+   Pop $2   
+   Pop $1
+FunctionEnd

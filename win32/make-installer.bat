@@ -35,5 +35,5 @@
 ::##############################################################################
 @echo off
 CD %~dp0
-echo creating installer
-nsis\makensis.exe /V1 Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsi
+echo "Creating CIAA_IDE_Suite Installer..."
+nsis\makensis.exe /V1 Installer_CIAA_IDE_Suite.nsi

@@ -1,8 +1,6 @@
 ;##############################################################################
 ;
-; Copyright 2014, 2015, Juan Cecconi
-; Copyright 2014, 2015, Martin Ribelotta
-; Copyright 2014, 2015, Natalia Requejo
+; Copyright 2015, Juan Cecconi
 ;
 ; This file is part of CIAA IDE.
 ;
@@ -33,18 +31,8 @@
 ; POSSIBILITY OF SUCH DAMAGE.
 ;
 ;##############################################################################
-
-; Copy this file to Config_Inst_MUI_CIAA_IDE_Suite_v1'1'0.nsh
-; and define which sections and files you want to include
 ;
-!define INSTALL_CYGWIN
-!define INSTALL_FIRMWARE
-!define INSTALL_DRIVERS
-!define INSTALL_IDE4PLC
-!define INSTALL_LINUX
-#!define SKIP_INSTALL_CYGWIN_FILES ; Allows do a small installer without loosing cygwin section, but skipping its files
-#!define SKIP_INSTALL_FIRMWARE_FILES ; Allows do a small installer without loosing Firmware section, but skipping its files
-!define SKIP_CLONE_FIRMWARE_REPO  ; Allows do a quicker test without loosing Firmware section, but skipping its repo clone
-#!define SKIP_INSTALL_DRIVERS_FILES ; Allows do a small installer without loosing Drivers section, but skipping its files
-#!define SKIP_INSTALL_IDE4PLC_FILES ; Allows do a small installer without loosing IDE4PLC section, but skipping its files
-#!define SKIP_INSTALL_LINUX_FILES ; Allows do a small installer without loosing Linux section, but skipping its files
+; define version number
+!define CIAA_IDE_SUITE_VERSION "1.2.0"
+!define FIRMWARE_VERSION "0.5.0"
+!define IDE4PLC_VERSION "1.0.1"
