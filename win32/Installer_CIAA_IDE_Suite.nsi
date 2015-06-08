@@ -290,7 +290,7 @@ Section "Acceso directo en Menu Inicio" SecMenuInicio
    !ifdef INSTALL_IDE4PLC
    SetOutPath "$INSTDIR\IDE4PLC\"
    CreateDirectory "$SMPROGRAMS\CIAA\IDE4PLC"
-   CreateShortCut "$SMPROGRAMS\CIAA\IDE4PLC\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\IDE4PLC.ico" 0 SW_SHOWNORMAL 
+   CreateShortCut "$SMPROGRAMS\CIAA\IDE4PLC\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.ico" 0 SW_SHOWNORMAL 
    !endif
 
    !ifdef INSTALL_LINUX
@@ -315,7 +315,7 @@ Section "Acceso directo en Escritorio" SecEscritorio
 
    !ifdef INSTALL_IDE4PLC
    SetOutPath "$INSTDIR\IDE4PLC\"
-   CreateShortCut "$DESKTOP\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\IDE4PLC.ico" 0 SW_SHOWNORMAL 
+   CreateShortCut "$DESKTOP\CIAA IDE4PLC.lnk" "$INSTDIR\IDE4PLC\Pharo.exe" "" "$INSTDIR\IDE4PLC\Pharo.ico" 0 SW_SHOWNORMAL 
    !endif
 
 ;
