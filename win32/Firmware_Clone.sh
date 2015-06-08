@@ -65,4 +65,5 @@ fi
 }
 
 cd `cygpath -u "$CIAA_SUITE_PATH"`
+export GIT_SSL_NO_VERIFY=1
 do_clone $FIRMWARE_REPO $FIRMWARE_VERSION
