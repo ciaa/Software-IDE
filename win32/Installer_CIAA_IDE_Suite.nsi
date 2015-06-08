@@ -47,8 +47,7 @@ SetCompressor /SOLID lzma
 !include "MUI.nsh"
 ;
 
-; Define Vars with version of each section
-!include "Versions_Installer_CIAA_IDE_Suite.nsh"
+; Installer_Versions.bat must be executed to define Vars with version of each section
 
 ; Vars
 Var Firmware_Section_Last_Sel ; Mutually Exclusive Section (Repo / Copy)
@@ -59,10 +58,10 @@ Var Firmware_Section_Last_Sel ; Mutually Exclusive Section (Repo / Copy)
 ;
 ;
 ; The name of the installer
-Name "CIAA-IDE-Suite v${CIAA_IDE_SUITE_VERSION}"
+Name "CIAA-IDE-Suite v$%CIAA_IDE_SUITE_VERSION%"
 
 ; The file to write
-OutFile "Setup_CIAA_IDE_Suite_v${CIAA_IDE_SUITE_VERSION}.exe"
+OutFile "Setup_CIAA_IDE_Suite_v$%CIAA_IDE_SUITE_VERSION%.exe"
 
 ; The default installation directory
 InstallDir C:\CIAA
@@ -96,14 +95,14 @@ InstallDir C:\CIAA
 
    !insertmacro MUI_LANGUAGE "Spanish"
    ;
-   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite v${CIAA_IDE_SUITE_VERSION}"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "ProductName" "CIAA IDE Suite v$%CIAA_IDE_SUITE_VERSION%"
    VIAddVersionKey /LANG=${LANG_SPANISH} "Comments" "Instalador de CIAA-IDE-Suite"
    VIAddVersionKey /LANG=${LANG_SPANISH} "CompanyName" "Proyecto-CIAA"
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalTrademarks" ""
    VIAddVersionKey /LANG=${LANG_SPANISH} "LegalCopyright" "Proyecto-CIAA © 2015"
    VIAddVersionKey /LANG=${LANG_SPANISH} "FileDescription" "Instalador del IDE completo para la CIAA"
-   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" ${CIAA_IDE_SUITE_VERSION}
-   VIProductVersion "${CIAA_IDE_SUITE_VERSION}.0"
+   VIAddVersionKey /LANG=${LANG_SPANISH} "FileVersion" $%CIAA_IDE_SUITE_VERSION%
+   VIProductVersion "1.0.0.0"
 ;--------------------------------
 ; Si termina de instalar Ok,
 ; pongo el desinstalador !!!
@@ -149,12 +148,13 @@ SectionEnd
 !endif
 ;
 !ifdef INSTALL_FIRMWARE
-SubSection "Firmware v${FIRMWARE_VERSION}" Sec_Firmware
+SubSection "Firmware v$%FIRMWARE_VERSION%" Sec_Firmware
    ;
    Section "Firmware Clone Repo" Sec_Firmware_Repo
 !ifndef SKIP_CLONE_FIRMWARE_REPO
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
+   System::Call 'Kernel32::SetEnvironmentVariable(t, t) i("FIRMWARE_VERSION", "$%FIRMWARE_VERSION%").r0'
    System::Call 'Kernel32::SetEnvironmentVariable(t, t) i("CIAA_SUITE_PATH", "$INSTDIR").r0'
    StrCmp $0 0 Env_Var_Error
       File /oname=Firmware_Clone.bat Firmware_Clone.bat
@@ -167,7 +167,7 @@ SubSection "Firmware v${FIRMWARE_VERSION}" Sec_Firmware
 !endif   
    SectionEnd
    
-   Section /o "Copia de Firmware v${FIRMWARE_VERSION}" Sec_Firmware_Copy
+   Section /o "Copia de Firmware v$%FIRMWARE_VERSION%" Sec_Firmware_Copy
 !ifndef SKIP_INSTALL_FIRMWARE_FILES
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -179,7 +179,7 @@ SubSectionEnd
 !endif
 ;
 !ifdef INSTALL_IDE4PLC
-Section "IDE4PLC v${IDE4PLC_VERSION}" Sec_IDE4PLC
+Section "IDE4PLC v$%IDE4PLC_VERSION%" Sec_IDE4PLC
 
    ; Set output path to the installation directory.
    SetOutPath $INSTDIR
@@ -218,10 +218,10 @@ Section "Drivers" Sec_Drivers
    ; We know that host is at least Win XP
    ${If} ${IsWinXP}
       ; Host is Win XP
-      File /oname=Setup_Win_XP_FTDI.exe FTDI_Driver\CDM_v2_10_00_WHQL_Certified.exe
+      File /oname=Setup_Win_XP_FTDI_$%FTDI_XP_VERSION%.exe FTDI_Driver\CDM_v$%FTDI_XP_VERSION%_WHQL_Certified.exe
    ${Else}
       ; Host is newer than XP
-      File /oname=Setup_Win_7_FTDI.exe FTDI_Driver\CDM_v2_12_00_WHQL_Certified.exe
+      File /oname=Setup_Win_7_FTDI_$%FTDI_WIN7_VERSION%.exe FTDI_Driver\CDM_v$%FTDI_WIN7_VERSION%_WHQL_Certified.exe
    ${EndIf}      
    MessageBox MB_ICONQUESTION|MB_YESNO "Dispone del hardware para realizar la instalación" IDNO FTDI_Installed_failed
    MessageBox MB_ICONINFORMATION "Por favor conecte su Hardware ahora, y luego continue cuando el sistema lo haya detectado"
@@ -229,11 +229,11 @@ Section "Drivers" Sec_Drivers
    ${If} ${IsWinXP}
       ; Host is Win XP
       ClearErrors
-      ExecWait "$INSTDIR\Setup_Win_XP_FTDI.exe"
+      ExecWait "$INSTDIR\Setup_Win_XP_FTDI_$%FTDI_XP_VERSION%.exe"
    ${Else}
       ; Host is newer than XP
       ClearErrors
-      ExecWait "$INSTDIR\Setup_Win_7_FTDI.exe"
+      ExecWait "$INSTDIR\Setup_Win_7_FTDI_$%FTDI_WIN7_VERSION%.exe"
    ${EndIf}  
    IfErrors 0 FTDI_Installed_ok
    FTDI_Installed_failed:
@@ -242,10 +242,10 @@ Section "Drivers" Sec_Drivers
    ; We know that host is at least Win XP
    ${If} ${IsWinXP}
       ; Host is Win XP
-      File /oname=zadig_Win_XP_2_1_1.exe FTDI_Driver\zadig_xp_2_1_1.exe
+      File /oname=zadig_Win_XP_$%ZADIG_XP_VERSION%.exe FTDI_Driver\zadig_xp_$%ZADIG_XP_VERSION%.exe
    ${Else}
       ; Host is newer than XP
-      File /oname=zadig_Win_7_2_1_1.exe FTDI_Driver\zadig_2_1_1.exe      
+      File /oname=zadig_Win_7_$%ZADIG_WIN7_VERSION%.exe FTDI_Driver\zadig_$%ZADIG_WIN7_VERSION%.exe      
    ${EndIf}
    File /oname=driver_winusb_zadig_ft2232h.png "Images\driver_winusb_zadig_ft2232h.png"
    ; Shows Instructions, web page and files to do the job!
@@ -257,8 +257,8 @@ Section "Drivers" Sec_Drivers
    ;
    Goto FTDI_done
    FTDI_Installed_ok:
-   Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
-   Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
+   Delete "$INSTDIR\Setup_Win_XP_FTDI_$%FTDI_XP_VERSION%.exe"
+   Delete "$INSTDIR\Setup_Win_7_FTDI_$%FTDI_WIN7_VERSION%.exe"
    Delete "$INSTDIR\usbdriver"
   
    ; Install WinUSB driver for FTDI 2232H & correct openocd version name
@@ -356,10 +356,10 @@ Section "Uninstall"
    
    ; Remove file...if it doens't exist, it fails and continue
    Delete "$INSTDIR\driver_winusb_zadig_ft2232h.png"
-   Delete "$INSTDIR\Setup_Win_7_FTDI.exe"
-   Delete "$INSTDIR\Setup_Win_XP_FTDI.exe"
-   Delete "$INSTDIR\zadig_Win_7_2_1_1.exe"
-   Delete "$INSTDIR\zadig_Win_XP_2_1_1.exe"  
+   Delete "$INSTDIR\Setup_Win_7_FTDI_$%FTDI_WIN7_VERSION%.exe"
+   Delete "$INSTDIR\Setup_Win_XP_FTDI_$%FTDI_XP_VERSION%.exe"
+   Delete "$INSTDIR\zadig_Win_7_$%ZADIG_WIN7_VERSION%.exe"
+   Delete "$INSTDIR\zadig_Win_XP_$%ZADIG_XP_VERSION%.exe"  
    Delete "$INSTDIR\SetUsers.bat"
   
   ; Remove uninstaller
@@ -382,8 +382,8 @@ SectionEnd
     !endif
     !ifdef INSTALL_FIRMWARE
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware} "Permite programar la CIAA mediente lenguaje C, basado en el CIAA Firmware"
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Repo} "Descarga online del repositorio mediante 'git clone' de CIAA Firmware, y hace un branch al tag v${FIRMWARE_VERSION}"
-       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Copy} "Instala solo UNA COPIA de CIAA Firmware v${FIRMWARE_VERSION}"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Repo} "Descarga online del repositorio mediante 'git clone' de CIAA Firmware, y hace un branch al tag v$%FIRMWARE_VERSION%"
+       !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Firmware_Copy} "Instala solo UNA COPIA de CIAA Firmware v$%FIRMWARE_VERSION%"
     !endif
     !ifdef INSTALL_DRIVERS
        !insertmacro MUI_DESCRIPTION_TEXT ${Sec_Drivers} "Permite instalar los drivers, pero debe contar con el Hardware!!!"

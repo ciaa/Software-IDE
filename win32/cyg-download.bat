@@ -35,8 +35,10 @@
 ::##############################################################################
 @ECHO OFF
 CD %~dp0
-set SETUPURL=http://cygwin.com/setup-x86.exe
+call Installer_Versions.bat
 call get-tools.bat
+
+set SETUPURL=http://cygwin.com/setup-x86.exe
 if not exist setup-x86.exe (
 	wget %SETUPURL% -O setup-x86.exe
 )

@@ -35,6 +35,7 @@
 ::##############################################################################
 @echo off
 CD %~dp0
+call Installer_Versions.bat
 call get-tools.bat
 
 set ARMGCCURL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q2-update/+download/gcc-arm-none-eabi-4_8-2014q2-20140609-win32.zip

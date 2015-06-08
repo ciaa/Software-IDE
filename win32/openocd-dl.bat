@@ -34,19 +34,20 @@
 ::
 ::##############################################################################
 @echo off
+call Installer_Versions.bat
 call get-tools.bat
 
-set LOCALFILE=openocd-0.9.0.7z
-set OPENOCD_URL=http://www.freddiechopin.info/en/download/category/4-openocd?download=118%3Aopenocd-0.9.0
+set LOCALFILE=openocd-%OPENOCD_VERSION%.7z
+set OPENOCD_URL=http://www.freddiechopin.info/en/download/category/4-openocd?download=118%3Aopenocd-%OPENOCD_VERSION%
 
 if not exist %LOCALFILE% (
-	echo Downloading OpenOCD 'On Chip Debugger'...
+	echo Downloading OpenOCD 'On Chip Debugger' v%OPENOCD_VERSION% ...
 	wget "%OPENOCD_URL%" -O %LOCALFILE%
    rmdir /S/Q cygwin\usr\local\openocd
 	echo Uncompress...
 	7za x %LOCALFILE%
 	echo Installing...
 	mkdir cygwin\usr\local\openocd
-	cp -R openocd-0.9.0\bin cygwin\usr\local\openocd
-	cp -R openocd-0.9.0\bin-x64 cygwin\usr\local\openocd
+	cp -R openocd-%OPENOCD_VERSION%\bin cygwin\usr\local\openocd
+	cp -R openocd-%OPENOCD_VERSION%\bin-x64 cygwin\usr\local\openocd
 )

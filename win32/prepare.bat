@@ -35,6 +35,8 @@
 ::##############################################################################
 @echo off
 CD %~dp0
+echo Defining version of each module to download...
+call Installer_Versions.bat > Installer_Versions.log
 echo Download prerequisites to create installer
 call get-tools.bat > get-tools.log
 echo Download cygwin...

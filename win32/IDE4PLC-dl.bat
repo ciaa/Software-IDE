@@ -32,17 +32,18 @@
 ::
 ::##############################################################################
 @echo off
+call Installer_Versions.bat
 call get-tools.bat
 
 set IDE4PLC_INSTDIR=IDE4PLC
-set IDE4PLC_URL=https://github.com/ciaa/IDE4PLC/releases/download/v1.0.1win/IDE4PLCv1.0.1-Win.zip
+set IDE4PLC_URL=https://github.com/ciaa/IDE4PLC/releases/download/v%IDE4PLC_VERSION%win/IDE4PLCv%IDE4PLC_VERSION%-Win.zip
 
-if not exist IDE4PLCv1.0.1-Win.zip (
-	echo Downloading IDE4PLC...
-	wget --no-check-certificate "%IDE4PLC_URL%" -O IDE4PLCv1.0.1-Win.zip
+if not exist IDE4PLCv%IDE4PLC_VERSION%-Win.zip (
+	echo Downloading IDE4PLC v%IDE4PLC_VERSION%...
+	wget --no-check-certificate "%IDE4PLC_URL%" -O IDE4PLCv%IDE4PLC_VERSION%-Win.zip
 )
 
 if not exist %IDE4PLC_INSTDIR% (
 	echo Uncompress...
-	unzip IDE4PLCv1.0.1-Win.zip
+	unzip IDE4PLCv%IDE4PLC_VERSION%-Win.zip
 )

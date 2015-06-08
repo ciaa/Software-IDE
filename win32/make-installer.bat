@@ -35,5 +35,6 @@
 ::##############################################################################
 @echo off
 CD %~dp0
+call Installer_Versions.bat
 echo "Creating CIAA_IDE_Suite Installer..."
-nsis\makensis.exe /V1 Installer_CIAA_IDE_Suite.nsi
+nsis-%NSIS_VERSION%\makensis.exe /V1 Installer_CIAA_IDE_Suite.nsi

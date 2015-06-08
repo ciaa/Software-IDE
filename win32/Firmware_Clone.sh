@@ -33,17 +33,16 @@
 #
 ###############################################################################
 
-#/bin/sh
+#/bin/bash
 
 FIRMWARE_REPO="https://github.com/ciaa/Firmware.git"
-FIRMWARE_VERSION="0.5.0"
 
 function cleanup {
    echo "cleanup done!"
 }
 
 function do_configure {
-	cp Firmware/Makefile.config Firmware/Makefile.mine
+	cp Makefile.config Makefile.mine
 #   sed -i 's/BOARD          ?= ciaa_sim_ia32/BOARD          ?= edu_ciaa_nxp/g' Makefile.mine
 }
 
@@ -51,13 +50,16 @@ function do_clone {
 echo -n "Cloning Firmware repo $1 ..."
 git clone --recursive $1 Firmware
 if [ $? -eq 0 ]; then
-   echo -n "New branch based on Firmware tag $2 named tag_$2 ..."
+   echo -n "Creating a new branch based on Firmware tag $2 named tag_$2 ..."
+   cd Firmware
    git checkout -b tag_$2 $2
 	do_configure Firmware
+   read -p "Clone finished, Please ENTER key to continue..."
 	return 0
 else
 	echo "ERROR!!!"
 	cleanup
+   read -p "Please ENTER key to continue..."
 	return 1
 fi
 }

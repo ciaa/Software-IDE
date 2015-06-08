@@ -35,6 +35,9 @@
 ::##############################################################################
 @echo off
 CD %~dp0
+call Installer_Versions.bat
+call get-tools.bat
+
 set PATH=%CD%;%PATH%
 set LOCALFILE=eclipse-cdt.zip
 set LOCALDIR=eclipse-cdt
@@ -44,7 +47,7 @@ set ECLIPSEPKGS=ilg.gnuarmeclipse.debug.gdbjtag.openocd,ilg.gnuarmeclipse.manage
 set ECLIPSEREPOS= http://download.eclipse.org/releases/kepler,http://gnuarmeclipse.sourceforge.net/updates
 set ECLPISEURL=http://mirrors.ibiblio.org/pub/mirrors/eclipse/technology/epp/downloads/release/luna/R/eclipse-cpp-luna-R-win32.zip
 set JREURL=http://download.oracle.com/otn-pub/java/jdk/8u20-b26/jre-8u20-windows-i586.tar.gz
-call get-tools.bat
+
 if not exist %LOCALFILE% (
 	echo Download eclipse
 	wget %ECLPISEURL% -O %LOCALFILE%

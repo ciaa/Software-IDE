@@ -5,6 +5,7 @@ Prerequisitos
 -------------
  Windows XP o superior
 
+(Actualizar de ser necesarias las versiones a ser descargadas en el archivo Installer_Versiones.bat)
 Ejecute prepare.bat en una consola de windows abierta como administrador (Run as administrator...) y espere a que termine.
 Esto creará las carpetas
  * local-repo Repo local donde se encuentran los paquetes requeridos para instalar cygwin
@@ -21,12 +22,10 @@ Esto creará las carpetas
 
 Luego crear el instalador:
  * Copiar Config_Installer_CIAA_IDE_Suite.config como Config_Installer_CIAA_IDE_Suite.nsh y definer que secciones y archivos quiere incluir
- * Ejecutar make-installer.bat en una consola y esperar un rato a que termine...el archivo Setup_CIAA_IDE_Suite_vX_Y_Z.exe se creará en esta carpeta.
-
+ * Ejecutar make-installer.bat en la consola y esperar un rato a que termine...el archivo Setup_CIAA_IDE_Suite_vX_Y_Z.exe se creará en esta carpeta.
 
 TODO
 ----
- - Mediente variables de entorno en Installer_Versions.bat, unificar scripts de download y NSIS segun versiones indicadas, centralizando las actualizaciones
  - Realizar un *.ini con los parámetros de eclipse correspondientes
  - workspace por defecto, perspectiva a usar -cdt-, etc.)
  - Realizar *.ini de instalación del driver

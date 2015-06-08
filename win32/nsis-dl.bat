@@ -34,16 +34,18 @@
 ::
 ::##############################################################################
 @echo off
+call Installer_Versions.bat
 call get-tools.bat
 
-set NSISURL=http://ufpr.dl.sourceforge.net/project/nsis/NSIS%%202/2.46/nsis-2.46.zip
+set LOCALFILE=nsis-%NSIS_VERSION%.zip
+set NSISURL=http://ufpr.dl.sourceforge.net/project/nsis/NSIS%%202/%NSIS_VERSION%/nsis-%NSIS_VERSION%.zip
 
-if not exist nsis-2.46.zip (
-	echo Downloading Nullsoft Scriptable Install System...
+if not exist %LOCALFILE% (
+	echo "Downloading Nullsoft Scriptable Install System (NSIS) v%NSIS_VERSION% ..."
 	wget "%NSISURL%"
 )
-if not exist nsis-2.46 (
+
+if not exist nsis-%NSIS_VERSION% (
 	echo Uncompress...
-	unzip nsis-2.46.zip
-	move/Y nsis-2.46 nsis
+	unzip nsis-%NSIS_VERSION%.zip
 )

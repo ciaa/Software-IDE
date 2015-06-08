@@ -1,10 +1,8 @@
 ::##############################################################################
 ::
-:: Copyright 2014, ACSE & CADIEEL
-::    ACSE   : http://www.sase.com.ar/asociacion-civil-sistemas-embebidos/ciaa/
-::    CADIEEL: http://www.cadieel.org.ar
+:: Copyright 2015, Juan Cecconi
 ::
-:: This file is part of CIAA Firmware.
+:: This file is part of CIAA IDE.
 ::
 :: Redistribution and use in source and binary forms, with or without
 :: modification, are permitted provided that the following conditions are met:
