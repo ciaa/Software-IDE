@@ -38,7 +38,7 @@ CD %~dp0
 call Installer_Versions.bat
 call get-tools.bat
 
-set ARMGCCURL=https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q2-update/+download/gcc-arm-none-eabi-4_8-2014q2-20140609-win32.zip
+set ARMGCCURL=https://launchpad.net/gcc-arm-embedded/4.9/4.9-2015-q2-update/+download/gcc-arm-none-eabi-4_9-2015q2-20150609-win32.zip
 
 if not exist arm-gcc-embedded.zip (
 	echo Downloading arm gcc...
