@@ -132,7 +132,7 @@ Section "Cygwin-Eclipse" Sec_Cygwin
 !ifndef SKIP_INSTALL_CYGWIN_FILES
    ; Put file there
    File /oname=SetUsers.bat SetUsers.bat.in
-   File /r cygwin
+   File /r /a cygwin
 
    ; Redirect $HOME to X:/Users/
    nsExec::ExecToLog "$INSTDIR\SetUsers.bat"
